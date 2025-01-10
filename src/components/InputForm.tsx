@@ -1,27 +1,13 @@
 import { useState } from "react";
-
-interface Todo {
-    id: number;
-    title: string;
-    rating: number;
-}
+import { TodoI } from "./TodoList";
 
 interface InputFormProps {
-    setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+    createNewTodo: (todo: TodoI) => void;
 }
 
-function InputForm({ setTodos }: InputFormProps) {
+function InputForm({ createNewTodo }: InputFormProps) {
     const [value, setValue] = useState("");
-
-    const createNewTodo = () => {
-        const newTodo = {
-            id: Math.floor(Math.random() * 100) + 1,
-            title: value,
-            rating: 0
-        };
-
-        setTodos(state => [newTodo, ...state]);
-    }
+    const [error, setError] = useState("");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -31,10 +17,24 @@ function InputForm({ setTodos }: InputFormProps) {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setError("");
 
-        createNewTodo();
+        if(value.length < 5) {
+            setError("Must be at least 5 characters.");
+        } else {
 
-        clearForm();
+            const newTodo = {
+                id: window.crypto.randomUUID(),
+                title: value,
+                rating: 0,
+                likes: 0
+            };
+    
+            createNewTodo(newTodo);
+    
+            clearForm();
+        }
+
     }
 
     const clearForm = () => {
@@ -48,6 +48,11 @@ function InputForm({ setTodos }: InputFormProps) {
 
                 <input type="submit" />
             </form>
+            {
+                error && (
+                    <p>{error}</p>
+                )
+            }
         </div>
     );
 }

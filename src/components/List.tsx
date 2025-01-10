@@ -1,21 +1,26 @@
 import { useState } from "react";
 import Item from "./Item";
-
-interface Todo {
-    id: number;
-    title: string;
-    rating: number;
-}
+import { TodoI } from "./TodoList";
 
 interface ListProps {
-    data: Todo[];
+    data: TodoI[];
+    deleteTodo: (todo: TodoI) => void;
+    likeTodo: (todo: TodoI) => void;
 }
 
-function List( { data }: ListProps) {
-    const [favorite, setFavorite] = useState<Todo | null>(null);
+function List( { data, deleteTodo, likeTodo }: ListProps) {
+    const [favorite, setFavorite] = useState<TodoI | null>(null);
 
-    const setFavoriteState = (todo: Todo | null) => {
+    const setFavoriteState = (todo: TodoI | null) => {
         setFavorite(todo);
+    }
+
+    const deleteTodoState = (todo: TodoI) => {
+        deleteTodo(todo);
+    }
+
+    const likeTodoState = (todo: TodoI) => {
+        likeTodo(todo);
     }
 
     return (
@@ -28,6 +33,8 @@ function List( { data }: ListProps) {
                             todo={todo}
                             favorite={favorite && favorite.id === todo.id}
                             setFavoriteProp={setFavoriteState}
+                            deleteTodoProp={deleteTodoState}
+                            likeTodoProp={likeTodoState}
                         />
                     )
                 })

@@ -1,58 +1,93 @@
-import { useReducer } from "react";
+import { useState, useReducer } from "react";
+import { TodoI } from "../App";
 
 function ReducerExample() {
 
+    const myData = [
+        {
+          id: window.crypto.randomUUID(),
+          title: "title 1",
+          rating: 5,
+          likes: 0
+        },
+        {
+          id: window.crypto.randomUUID(),
+          title: "title 2",
+          rating: 1,
+          likes: 0
+        },
+        {
+          id: window.crypto.randomUUID(),
+          title: "title 3",
+          rating: 0.5,
+          likes: 0
+        },
+        {
+          id: window.crypto.randomUUID(),
+          title: "title 4",
+          rating: 3.5,
+          likes: 0
+        },
+      ];
+
     interface State {
-        count: number
+        todos: TodoI[];
+        filteredTodos: TodoI[];
     }
 
-    type ActionType = {
-        type: "add" | "subtract"
-    }
+    type ActionType = 
+        | { type: "create_todo", value: TodoI }
 
     const initialState = {
-        count: 0
+        todos: myData,
+        filteredTodos: myData
     }
 
-    function myReducer(state: State, action: ActionType) {
+    function todosReducer(state: State, action: ActionType): State {
         switch(action.type) {
-            case "add":
+            case "create_todo":
 
                 return {
-                    count: state.count + 1
-                };
-
-            case "subtract":
-
-                return {
-                    count: state.count - 1
+                    ...state,
+                    todos: [action.value, ...state.todos],
+                    filteredTodos: [action.value, ...state.filteredTodos]
                 };
 
             default:
-                return initialState;
+                throw new Error("Unknown Action");
         }
     }
 
-    const [state, dispatch] = useReducer(myReducer, initialState);
+    const [state, dispatch] = useReducer(todosReducer, initialState);
 
-    const handleAdd = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const [value, setValue] = useState("");
+    
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
 
-        dispatch({ type: "add" });
-    }
+        setValue(e.target.value);
+    };
 
-    const handleSubtract = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        dispatch({ type: "subtract" });
+        const newTodo = {
+            id: window.crypto.randomUUID(),
+            title: "value",
+            rating: 0,
+            likes: 0
+        };
+
+        dispatch({ type: "create_todo", value: newTodo });
     }
 
     return (
         <div>
-            <h2>useReducer hook</h2>
-            <p>{state.count}</p>
-            <button onClick={handleAdd}>Add</button>
-            <button onClick={handleSubtract}>Subtract</button>
+            <form onSubmit={handleSubmit}>
+                <input placeholder="Enter new todo" onChange={handleChange} value={value}/>
+
+                <input type="submit" />
+            </form>
         </div>
     )
 }

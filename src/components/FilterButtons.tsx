@@ -1,32 +1,10 @@
-interface Todo {
-    id: number;
-    title: string;
-    rating: number;
-}
-
 interface FilterButtonsProps {
-    originalData: Todo[];
-    setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+    filterAll: () => void;
+    moreThanThree: () => void;
+    sortByLikes: () => void;
 }
 
-function FilterButtons({ originalData, setTodos }: FilterButtonsProps) {
-
-    const moreThanThree = () => {
-
-        setTodos((state) => {
-
-          const newArr = state.filter((todo) => todo.rating > 3);
-
-          return newArr;
-        });
-
-    };
-
-    const filterAll = () => {
-
-        setTodos(originalData);
-
-    };
+function FilterButtons({ filterAll, moreThanThree, sortByLikes }: FilterButtonsProps) {
 
     const handleClickMoreThanThree = (e : React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -40,8 +18,15 @@ function FilterButtons({ originalData, setTodos }: FilterButtonsProps) {
         filterAll();
     }
 
+    const handleClickSortByLikes = (e : React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        sortByLikes();
+    }
+
     return (
         <div id="filter-buttons">
+            <button onClick={handleClickSortByLikes}>Sort By Likes</button>
             <button onClick={handleClickMoreThanThree}>More than 3 stars</button>
             <button onClick={handleClickAll}>All</button>
         </div>

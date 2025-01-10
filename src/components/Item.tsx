@@ -1,16 +1,14 @@
-interface Todo {
-    id: number;
-    title: string;
-    rating: number;
-}
+import { TodoI } from "./TodoList";
 
 interface ItemProps {
-    todo: Todo;
+    todo: TodoI;
     favorite: boolean | null;
-    setFavoriteProp: (todo: Todo | null) => void;
+    setFavoriteProp: (todo: TodoI | null) => void;
+    deleteTodoProp: (todo: TodoI) => void;
+    likeTodoProp: (todo: TodoI) => void;
 }
 
-function Item({ todo, favorite, setFavoriteProp } : ItemProps) {
+function Item({ todo, favorite, setFavoriteProp, deleteTodoProp, likeTodoProp } : ItemProps) {
 
     let output = "";
 
@@ -25,7 +23,7 @@ function Item({ todo, favorite, setFavoriteProp } : ItemProps) {
         }
     }
 
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleFavoriteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
 
         e.preventDefault();
 
@@ -38,11 +36,24 @@ function Item({ todo, favorite, setFavoriteProp } : ItemProps) {
 
     }
 
+    const handleDeleteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        deleteTodoProp(todo);
+    }
+
+    const handleLikeClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        likeTodoProp(todo);
+    }
+
     return (
         <div className="item">
             <h2>{todo.title}</h2>
+            <p>Likes: {todo.likes}</p>
             <div>{output}</div>
-            <button onClick={handleClick}>
+            <button onClick={handleFavoriteClick}>
                 {
                     favorite ? (
                         <div>{"\u{1F499}"}</div>
@@ -51,6 +62,8 @@ function Item({ todo, favorite, setFavoriteProp } : ItemProps) {
                     )
                 }
             </button>
+            <button onClick={handleLikeClick}>{"\u{1F44D}"}</button>
+            <button onClick={handleDeleteClick}>X</button>
         </div>
     )
 }
