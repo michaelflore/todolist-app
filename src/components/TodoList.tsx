@@ -13,36 +13,9 @@ export interface TodoI {
 
 function TodoList() {
 
-  const myData = [
-    {
-      id: window.crypto.randomUUID(),
-      title: "title 1",
-      rating: 5,
-      likes: 0
-    },
-    {
-      id: window.crypto.randomUUID(),
-      title: "title 2",
-      rating: 1,
-      likes: 0
-    },
-    {
-      id: window.crypto.randomUUID(),
-      title: "title 3",
-      rating: 0.5,
-      likes: 0
-    },
-    {
-      id: window.crypto.randomUUID(),
-      title: "title 4",
-      rating: 3.5,
-      likes: 0
-    },
-  ];
+  const [todos, setTodos] = useState<TodoI[]>([]);
 
-  const [todos, setTodos] = useState<TodoI[]>(myData);
-
-  const [filteredTodos, setFilteredTodos] = useState<TodoI[]>(myData); //displayed
+  const [filteredTodos, setFilteredTodos] = useState<TodoI[]>([]); //displayed
 
   //will still get called on initial render, then after todos is updated
   useEffect(() => {

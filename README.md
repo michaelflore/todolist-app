@@ -49,7 +49,12 @@ export default tseslint.config({
 })
 ```
 
-## To start
+## Generate random uuid
 ```
-npm run dev
+node -e "console.log(require('crypto').randomUUID())"
+```
+
+## To start data server
+```
+npm run server
 ```

@@ -1,0 +1,28 @@
+{
+    "todoList": [
+        {
+            "id": "2e70d95c-11b4-494b-ad69-026acc309a08",
+            "title": "Complete project report",
+            "rating": 5,
+            "likes": 0
+          },
+          {
+            "id": "63980a8e-5538-4e70-a9bd-c16e6a947129",
+            "title": "Buy groceries",
+            "rating": 1,
+            "likes": 0
+          },
+          {
+            "id": "6418eab2-161d-4c78-8d68-0c9176ce642c",
+            "title": "Respond to client emails",
+            "rating": 0.5,
+            "likes": 0
+          },
+          {
+            "id": "3bb4944c-d5d0-4f93-a8c5-93b513bd90cc",
+            "title": "Schedule doctor's appointment",
+            "rating": 3.5,
+            "likes": 0
+          }
+    ]
+}
