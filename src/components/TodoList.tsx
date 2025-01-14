@@ -13,9 +13,13 @@ export interface TodoI {
 
 function TodoList() {
 
-  const [todos, setTodos] = useState<TodoI[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
+  const [todos, setTodos] = useState<TodoI[]>([]);
   const [filteredTodos, setFilteredTodos] = useState<TodoI[]>([]); //displayed
+
+  const [searchTerm, setSearchTerm] = useState("");
 
   //will still get called on initial render, then after todos is updated
   useEffect(() => {
@@ -23,8 +27,49 @@ function TodoList() {
   }, [todos]);
 
   useEffect(() => {
-    document.title = "Todo List";
-  }, []);
+
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    (
+      async () => {
+
+        setLoading(true);
+
+        try {
+          const searchQuery = searchTerm ? `?search=${searchTerm}` : "";
+
+          const response = await fetch("http://localhost:5000/todolist" + searchQuery, {
+            method: "GET",
+            signal: signal
+          });
+  
+          const data = await response.json();
+  
+          setError(false);
+          setTodos(data);
+          setFilteredTodos(data);
+
+          setLoading(false);
+
+        } catch(err) {
+
+          if(err instanceof Error && err.name == "AbortError") {
+            console.error(err);
+          } else {
+            setError(true);
+            setLoading(false);
+          }
+
+        }
+      }
+    )();
+
+    return () => {
+      abortController.abort();
+    }
+
+  }, [searchTerm]);
 
   const createNewTodo = (todo: TodoI) => {
     setTodos(state => [todo, ...state]);
@@ -102,21 +147,56 @@ function TodoList() {
 
   };
 
+  const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  }
+
   return (
     <>
-      <InputForm
-        createNewTodo={createNewTodo}
+      <h1>TodoList</h1>
+      <input
+        type="text"
+        placeholder="Search todo..."
+        value={searchTerm}
+        onChange={handleSearchTermChange}
       />
-      <FilterButtons
-        filterAll={filterAll}
-        moreThanThree={moreThanThree}
-        sortByLikes={sortByLikes}
-      />
-      <List
-        data={filteredTodos}
-        deleteTodo={deleteTodo}
-        likeTodo={likeTodo}
-      />
+      {
+        loading ? (
+          <div>Loading...</div>
+        ) : (
+          <>
+            {
+              error ? (
+                <div>
+                  Something Went Wrong.
+                </div>
+              ) : (
+                <>
+                  <InputForm
+                    createNewTodo={createNewTodo}
+                  />
+                  {
+                    filteredTodos.length > 0 && (
+                      <>
+                        <FilterButtons
+                          filterAll={filterAll}
+                          moreThanThree={moreThanThree}
+                          sortByLikes={sortByLikes}
+                        />
+                        <List
+                          data={filteredTodos}
+                          deleteTodo={deleteTodo}
+                          likeTodo={likeTodo}
+                        />
+                      </>
+                    )
+                  }
+                </>
+              )
+            }
+          </>
+        )
+      }
     </>
   )
 }

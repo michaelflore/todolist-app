@@ -7,7 +7,10 @@ interface InputFormProps {
 
 function InputForm({ createNewTodo }: InputFormProps) {
     const [value, setValue] = useState("");
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -22,17 +25,49 @@ function InputForm({ createNewTodo }: InputFormProps) {
         if(value.length < 5) {
             setError("Must be at least 5 characters.");
         } else {
-
+            setLoading(true);
+            setSubmitDisabled(true);
+           
             const newTodo = {
                 id: window.crypto.randomUUID(),
                 title: value,
                 rating: 0,
                 likes: 0
             };
+
+            (
+                async () => {
+
+                    try {
+
+                        const response = await fetch("http://localhost:5000/todolist", {
+                            method: "POST",
+                            headers: {
+                                "Accept": "application/json",
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(newTodo)
+                        });
+                    
+                        const data = await response.json();
+
+                        createNewTodo(data);
     
-            createNewTodo(newTodo);
-    
-            clearForm();
+                        clearForm();
+                        setLoading(false);
+                        setSubmitDisabled(false);
+
+                    } catch(e) {
+                        console.error(e);
+
+                        setError("Something Went Wrong");
+                        setLoading(false);
+                        setSubmitDisabled(false);
+                    }
+
+                }
+            )();
+
         }
 
     }
@@ -46,7 +81,7 @@ function InputForm({ createNewTodo }: InputFormProps) {
             <form onSubmit={handleSubmit}>
                 <input placeholder="Enter new todo" onChange={handleChange} value={value}/>
 
-                <input type="submit" />
+                <input type="submit" value={loading ? "Loading..." : "Add"} disabled={submitDisabled} />
             </form>
             {
                 error && (

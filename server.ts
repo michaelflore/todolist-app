@@ -16,9 +16,46 @@ server.use( function( req, res, next ) {
 
 //Example
 server.get( '/todolist', (req, res) => {
+
+    if(req.query.search) {
+        const filteredJokes = list.todoList.filter((todo) => {
+            const query = (req.query.search as string).toLowerCase();
+            
+            return todo.title.toLowerCase().includes(query);
+        });
+
+        res.status(200).jsonp(filteredJokes);
+
+        return;
+    }
+
     const response = list.todoList;
 
-    res.status(200).jsonp(response);
+    setTimeout(() => {
+        res.status(200).jsonp(response);
+    }, 3000);
+
+    return;
+});
+
+server.post( '/todolist', (req, res) => {
+    const newTodo = req.body;
+
+    const response = list.todoList;
+
+    response.push(newTodo);
+
+    setTimeout(() => {
+        res.status(200).jsonp(newTodo);
+    }, 3000);
+});
+
+server.get( '/empty', (req, res) => {
+    const response = [];
+
+    setTimeout(() => {
+        res.status(200).jsonp(response);
+    }, 3000);
 });
 
 server.use( middlewares );
