@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "tsc server.ts --target es2022 --module esnext --moduleResolution node --resolveJsonModule true --esModuleInterop true && node server.js"
+    "server": "tsc server.ts --target es2022 --module esnext --moduleResolution node --resolveJsonModule true --esModuleInterop true && node server.js",
+    "development": "concurrently \"npm run server\" \"npm run dev\" "
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -20,6 +21,7 @@
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "concurrently": "^9.1.2",
     "eslint": "^9.17.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.16",
