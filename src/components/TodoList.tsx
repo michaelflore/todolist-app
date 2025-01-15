@@ -39,7 +39,7 @@ function TodoList() {
         try {
           const searchQuery = searchTerm ? `?search=${searchTerm}` : "";
 
-          const response = await fetch("http://localhost:5000/todolist" + searchQuery, {
+          const response = await fetch("/api/todolist" + searchQuery, {
             method: "GET",
             signal: signal
           });

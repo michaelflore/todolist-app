@@ -15,7 +15,7 @@ server.use( function( req, res, next ) {
 });
 
 //Example
-server.get( '/todolist', (req, res) => {
+server.get( '/api/todolist', (req, res) => {
 
     if(req.query.search) {
         const filteredJokes = list.todoList.filter((todo) => {
@@ -38,7 +38,7 @@ server.get( '/todolist', (req, res) => {
     return;
 });
 
-server.post( '/todolist', (req, res) => {
+server.post( '/api/todolist', (req, res) => {
     const newTodo = req.body;
 
     const response = list.todoList;
@@ -50,7 +50,7 @@ server.post( '/todolist', (req, res) => {
     }, 3000);
 });
 
-server.get( '/empty', (req, res) => {
+server.get( '/api/empty', (req, res) => {
     const response = [];
 
     setTimeout(() => {

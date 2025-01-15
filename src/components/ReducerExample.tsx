@@ -1,5 +1,5 @@
 import { useState, useReducer } from "react";
-import { TodoI } from "../App";
+import { TodoI } from "./TodoList";
 
 function ReducerExample() {
 
@@ -88,6 +88,17 @@ function ReducerExample() {
 
                 <input type="submit" />
             </form>
+            <div>
+                {
+                    state.filteredTodos.map((value) => {
+                        return (
+                            <div>
+                                {value.title}
+                            </div>
+                        )
+                    })
+                }
+            </div>
         </div>
     )
 }

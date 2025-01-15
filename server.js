@@ -10,7 +10,7 @@ server.use(function (req, res, next) {
     next();
 });
 //Example
-server.get('/todolist', (req, res) => {
+server.get('/api/todolist', (req, res) => {
     if (req.query.search) {
         const filteredJokes = list.todoList.filter((todo) => {
             const query = req.query.search.toLowerCase();
@@ -25,7 +25,7 @@ server.get('/todolist', (req, res) => {
     }, 3000);
     return;
 });
-server.post('/todolist', (req, res) => {
+server.post('/api/todolist', (req, res) => {
     const newTodo = req.body;
     const response = list.todoList;
     response.push(newTodo);
@@ -33,7 +33,7 @@ server.post('/todolist', (req, res) => {
         res.status(200).jsonp(newTodo);
     }, 3000);
 });
-server.get('/empty', (req, res) => {
+server.get('/api/empty', (req, res) => {
     const response = [];
     setTimeout(() => {
         res.status(200).jsonp(response);

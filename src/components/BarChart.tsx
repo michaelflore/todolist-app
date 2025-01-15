@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 
 export function BarChart() {
 
-    const [theTimer, setTheTimer] = useState<number>(0);
-    const [goal, setGoal] = useState(10);
+    const [theTimer, setTheTimer] = useState<number | null>(null);
+    const [goal] = useState(10);
     const [points, setPoints] = useState(0);
     const [going, setGoing] = useState(false);
     const [resetTimerBtn, setResetTimerBtn] = useState(true);
+
+    console.log(theTimer)
 
     const addPoints = () => {
         setPoints(points => points + 1);
@@ -14,31 +16,32 @@ export function BarChart() {
 
     const startTimer = () => {
 
-        setTheTimer(setInterval(() => {
+        const timer = window.setInterval(() => {
             addPoints();
-        }, 1000));
+        }, 1000);
+
+        setTheTimer(timer);
 
         setGoing(true);
         setResetTimerBtn(false);
     }
 
     const stopTimer = () => {
-        setTheTimer(theTimer => {
-            clearInterval(theTimer)
 
-            return 0;
-        })
+        setTheTimer(theTimer => {
+            if(theTimer !== null) {
+                clearInterval(theTimer);
+            }
+
+            return null;
+        });
+
         setGoing(false);
     }
 
     const resetTimer = () => {
         setPoints(0);
-        setTheTimer(theTimer => {
-            clearInterval(theTimer)
-
-            return 0;
-        })
-        setGoing(false);
+        stopTimer();
         setResetTimerBtn(true);
     }
 
@@ -47,6 +50,7 @@ export function BarChart() {
     }
 
     useEffect(() => {
+
         if(points === 10) {
             stopTimer();
         }
