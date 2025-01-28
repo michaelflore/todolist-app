@@ -40,7 +40,7 @@ function InputForm({ createNewTodo }: InputFormProps) {
 
                     try {
 
-                        const response = await fetch("http://localhost:5000/todolist", {
+                        const response = await fetch("/api/todolist", {
                             method: "POST",
                             headers: {
                                 "Accept": "application/json",

@@ -20,9 +20,7 @@ server.get('/api/todolist', (req, res) => {
         return;
     }
     const response = list.todoList;
-    setTimeout(() => {
-        res.status(200).jsonp(response);
-    }, 3000);
+    res.status(200).jsonp(response);
     return;
 });
 server.post('/api/todolist', (req, res) => {

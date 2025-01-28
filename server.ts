@@ -31,9 +31,7 @@ server.get( '/api/todolist', (req, res) => {
 
     const response = list.todoList;
 
-    setTimeout(() => {
-        res.status(200).jsonp(response);
-    }, 3000);
+    res.status(200).jsonp(response);
 
     return;
 });

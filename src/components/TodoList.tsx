@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import List from "./List";
 import FilterButtons from "./FilterButtons";
 import InputForm from "./InputForm";
+import { fetchTodosAPI } from "../api/todo-api";
 
 export interface TodoI {
   id: string;
@@ -21,6 +22,9 @@ function TodoList() {
 
   const [searchTerm, setSearchTerm] = useState("");
 
+  const searchDebouncer = useRef<number | null>();
+  const abortControllerSearch = useRef<AbortController | null>();
+
   //will still get called on initial render, then after todos is updated
   useEffect(() => {
     console.log("todos changed")
@@ -31,45 +35,46 @@ function TodoList() {
     const abortController = new AbortController();
     const signal = abortController.signal;
 
-    (
-      async () => {
+    const fetchTodos = async () => {
+      
+      try {
 
         setLoading(true);
 
-        try {
-          const searchQuery = searchTerm ? `?search=${searchTerm}` : "";
+        const data = await fetchTodosAPI("", signal);
 
-          const response = await fetch("/api/todolist" + searchQuery, {
-            method: "GET",
-            signal: signal
-          });
-  
-          const data = await response.json();
-  
-          setError(false);
+        if(data && Array.isArray(data)) {
+
           setTodos(data);
           setFilteredTodos(data);
-
+          setError(false);
           setLoading(false);
 
-        } catch(err) {
+        } else {
 
-          if(err instanceof Error && err.name == "AbortError") {
-            console.error(err);
-          } else {
-            setError(true);
-            setLoading(false);
-          }
-
+          setError(true);
+          setLoading(false);
+          
         }
+
+      } catch(err) {
+
+        console.error("fetchTodos", err);
+
+        setError(true);
+        setLoading(false);
+
       }
-    )();
+
+    }
+
+    fetchTodos();
 
     return () => {
       abortController.abort();
     }
 
-  }, [searchTerm]);
+  }, []);
 
   const createNewTodo = (todo: TodoI) => {
     setTodos(state => [todo, ...state]);
@@ -149,6 +154,55 @@ function TodoList() {
 
   const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
+
+    if(searchDebouncer.current) {
+      clearTimeout(searchDebouncer.current);
+    }
+
+    if(abortControllerSearch.current) {
+      abortControllerSearch.current.abort();
+    }
+
+    searchDebouncer.current = window.setTimeout(() => {
+
+      const abortController = new AbortController();
+      abortControllerSearch.current = abortController;
+      
+      const fetchTodos = async () => {
+        
+        try {
+
+          setLoading(true);
+
+          const data = await fetchTodosAPI(e.target.value, abortController.signal);
+  
+          if(data && Array.isArray(data)) {
+  
+            setTodos(data);
+            setFilteredTodos(data);
+            setError(false);
+            setLoading(false);
+            
+          } else {
+
+            setError(true);
+            setLoading(false);
+
+          }
+  
+        } catch(err) {
+  
+          console.error("fetchTodos", err);
+  
+          setError(true);
+          setLoading(false);
+  
+        }
+  
+      }
+
+      fetchTodos();
+    }, 500);
   }
 
   return (

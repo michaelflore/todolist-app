@@ -5,14 +5,12 @@ import TodoList from "./components/TodoList";
 // import BarChart from "./components/BarChart";
 // import ReducerExample from "./components/ReducerExample";
 // import Header from "./components/Header";
- 
+
 function App() {
 
   return (
     <>
       <TodoList />
-      {/* <Timer /> */}
-      {/* <BatteryStatus /> */}
     </>
   )
 }
