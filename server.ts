@@ -41,7 +41,7 @@ server.post( '/api/todolist', (req, res) => {
 
     const response = list.todoList;
 
-    response.push(newTodo);
+    response.unshift(newTodo);
 
     setTimeout(() => {
         res.status(200).jsonp(newTodo);

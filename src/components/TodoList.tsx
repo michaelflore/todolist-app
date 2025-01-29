@@ -1,16 +1,11 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 
 import List from "./List";
 import FilterButtons from "./FilterButtons";
 import InputForm from "./InputForm";
 import { fetchTodosAPI } from "../api/todo-api";
-
-export interface TodoI {
-  id: string;
-  title: string;
-  rating: number;
-  likes: number;
-}
+import { TodoI } from "../types/todo";
+import SearchForm from "./SearchForm";
 
 function TodoList() {
 
@@ -19,11 +14,6 @@ function TodoList() {
 
   const [todos, setTodos] = useState<TodoI[]>([]);
   const [filteredTodos, setFilteredTodos] = useState<TodoI[]>([]); //displayed
-
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const searchDebouncer = useRef<number | null>();
-  const abortControllerSearch = useRef<AbortController | null>();
 
   //will still get called on initial render, then after todos is updated
   useEffect(() => {
@@ -50,11 +40,6 @@ function TodoList() {
           setError(false);
           setLoading(false);
 
-        } else {
-
-          setError(true);
-          setLoading(false);
-          
         }
 
       } catch(err) {
@@ -71,7 +56,7 @@ function TodoList() {
     fetchTodos();
 
     return () => {
-      abortController.abort();
+      abortController.abort("Mounted");
     }
 
   }, []);
@@ -91,49 +76,21 @@ function TodoList() {
     });
   };
 
-  const likeTodo = (todo: TodoI) => {
-    setTodos(state => {
-      return state.map((value => {
-        if(value.id === todo.id) {
-          return {
-            ...value,
-            likes: value.likes + 1
-          };
-        } else {
-          return value;
-        }
-      }))
-    });
+  // const sortByLikes = () => {
+  //   setFilteredTodos(state => {
+  //     const arrayCopy = [...state];
 
-    setFilteredTodos(state => {
-      return state.map((value => {
-        if(value.id === todo.id) {
-          return {
-            ...value,
-            likes: value.likes + 1
-          };
-        } else {
-          return value;
-        }
-      }))
-    });
-  }
-
-  const sortByLikes = () => {
-    setFilteredTodos(state => {
-      const arrayCopy = [...state];
-
-      return arrayCopy.sort((a, b) => {
-        if(a.likes > b.likes) { //a will come before b
-          return -1;
-        } else if (b.likes > a.likes) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-    })
-  }
+  //     return arrayCopy.sort((a, b) => {
+  //       if(a.likes > b.likes) { //a will come before b
+  //         return -1;
+  //       } else if (b.likes > a.likes) {
+  //         return 1;
+  //       } else {
+  //         return 0;
+  //       }
+  //     });
+  //   })
+  // }
 
   const filterAll = () => {
     
@@ -141,79 +98,35 @@ function TodoList() {
 
   };
 
-  const moreThanThree = () => {
+  const setLoadingTodos = (loading: boolean) => {
+    setLoading(loading);
+  }
 
-    setFilteredTodos((state) => {
+  const setErrorTodos = (error: boolean) => {
+    setError(error);
+  }
 
-      const newArr = state.filter((todo) => todo.rating > 3);
-
-      return newArr;
-    });
-
-  };
-
-  const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-
-    if(searchDebouncer.current) {
-      clearTimeout(searchDebouncer.current);
-    }
-
-    if(abortControllerSearch.current) {
-      abortControllerSearch.current.abort();
-    }
-
-    searchDebouncer.current = window.setTimeout(() => {
-
-      const abortController = new AbortController();
-      abortControllerSearch.current = abortController;
-      
-      const fetchTodos = async () => {
-        
-        try {
-
-          setLoading(true);
-
-          const data = await fetchTodosAPI(e.target.value, abortController.signal);
-  
-          if(data && Array.isArray(data)) {
-  
-            setTodos(data);
-            setFilteredTodos(data);
-            setError(false);
-            setLoading(false);
-            
-          } else {
-
-            setError(true);
-            setLoading(false);
-
-          }
-  
-        } catch(err) {
-  
-          console.error("fetchTodos", err);
-  
-          setError(true);
-          setLoading(false);
-  
-        }
-  
-      }
-
-      fetchTodos();
-    }, 500);
+  const setTodosState = (data: TodoI[]) => {
+    setTodos(data);
+    setFilteredTodos(data);
   }
 
   return (
-    <>
-      <h1>TodoList</h1>
-      <input
-        type="text"
-        placeholder="Search todo..."
-        value={searchTerm}
-        onChange={handleSearchTermChange}
+    <div className="todolist-app">
+      <h1>My Todos</h1>
+      <InputForm
+        createNewTodo={createNewTodo}
       />
+      <div className="search-and-filter">
+        <SearchForm
+          setLoadingTodos={setLoadingTodos}
+          setErrorTodos={setErrorTodos}
+          setTodosState={setTodosState}
+        />
+        <FilterButtons
+          filterAll={filterAll}
+        />
+      </div>
       {
         loading ? (
           <div>Loading...</div>
@@ -225,33 +138,22 @@ function TodoList() {
                   Something Went Wrong.
                 </div>
               ) : (
-                <>
-                  <InputForm
-                    createNewTodo={createNewTodo}
-                  />
+                <div className="container">
                   {
                     filteredTodos.length > 0 && (
-                      <>
-                        <FilterButtons
-                          filterAll={filterAll}
-                          moreThanThree={moreThanThree}
-                          sortByLikes={sortByLikes}
-                        />
-                        <List
-                          data={filteredTodos}
-                          deleteTodo={deleteTodo}
-                          likeTodo={likeTodo}
-                        />
-                      </>
+                      <List
+                        data={filteredTodos}
+                        deleteTodo={deleteTodo}
+                      />
                     )
                   }
-                </>
+                </div>
               )
             }
           </>
         )
       }
-    </>
+    </div>
   )
 }
 

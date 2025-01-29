@@ -1,5 +1,5 @@
 import { useState, useReducer } from "react";
-import { TodoI } from "./TodoList";
+import { TodoI } from "../types/todo";
 
 function ReducerExample() {
 
@@ -7,27 +7,8 @@ function ReducerExample() {
         {
           id: window.crypto.randomUUID(),
           title: "title 1",
-          rating: 5,
-          likes: 0
-        },
-        {
-          id: window.crypto.randomUUID(),
-          title: "title 2",
-          rating: 1,
-          likes: 0
-        },
-        {
-          id: window.crypto.randomUUID(),
-          title: "title 3",
-          rating: 0.5,
-          likes: 0
-        },
-        {
-          id: window.crypto.randomUUID(),
-          title: "title 4",
-          rating: 3.5,
-          likes: 0
-        },
+          completed: false
+        }
       ];
 
     interface State {
@@ -74,8 +55,7 @@ function ReducerExample() {
         const newTodo = {
             id: window.crypto.randomUUID(),
             title: "value",
-            rating: 0,
-            likes: 0
+            completed: false
         };
 
         dispatch({ type: "create_todo", value: newTodo });

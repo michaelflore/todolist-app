@@ -26,7 +26,7 @@ server.get('/api/todolist', (req, res) => {
 server.post('/api/todolist', (req, res) => {
     const newTodo = req.body;
     const response = list.todoList;
-    response.push(newTodo);
+    response.unshift(newTodo);
     setTimeout(() => {
         res.status(200).jsonp(newTodo);
     }, 3000);

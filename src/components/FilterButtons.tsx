@@ -1,16 +1,34 @@
+import { css } from "@emotion/react";
+
 interface FilterButtonsProps {
     filterAll: () => void;
-    moreThanThree: () => void;
-    sortByLikes: () => void;
 }
 
-function FilterButtons({ filterAll, moreThanThree, sortByLikes }: FilterButtonsProps) {
+const buttonStyles = css`
+  background-color: rgba(0, 0, 0, 0.02);
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  border: 1px solid transparent;
+  color: #000;
+  border-radius: 5px;
+  transition: background-color 0.25s;
+  cursor: pointer;
 
-    const handleClickMoreThanThree = (e : React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
 
-        moreThanThree();
-    }
+  &:focus {
+    outline: 2px solid #777777;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #777777;
+  }
+`;
+
+function FilterButtons({ filterAll }: FilterButtonsProps) {
 
     const handleClickAll = (e : React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -18,17 +36,14 @@ function FilterButtons({ filterAll, moreThanThree, sortByLikes }: FilterButtonsP
         filterAll();
     }
 
-    const handleClickSortByLikes = (e : React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-
-        sortByLikes();
-    }
-
     return (
-        <div id="filter-buttons">
-            <button onClick={handleClickSortByLikes}>Sort By Likes</button>
-            <button onClick={handleClickMoreThanThree}>More than 3 stars</button>
-            <button onClick={handleClickAll}>All</button>
+        <div className="filter-buttons">
+            <button
+                css={buttonStyles}
+                onClick={handleClickAll}
+            >
+                All
+            </button>
         </div>
     )
 }

@@ -13,7 +13,7 @@ export const fetchTodosAPI = async (searchTerm: string, signal: AbortSignal) => 
             method: "GET",
             signal: signal
         });
-
+console.log(response);
         const data = await response.json();
 
         return data;
