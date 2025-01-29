@@ -1,16 +1,24 @@
+# Components
+Material UI
+
+It comes packaged with default styles and uses emotion as its default styling engine
+Use the icons as well
+
+Need @emotion/styled as well
+
 # Styling
 
 ### CSS-in-JS
 Emotion
 
-Using the @emotion/react library specific for react
+Use the @emotion/react library specific for react
 
-Using css prop with typscript add to tsconfig,json
+To use css prop with typscript add to tsconfig.json
 ```
 jsxImportSource: "@emotion/react"
 ```
 
-Add to vite config to have css work properly
+Add to vite config to have css prop work properly
 ```
 react(
     {

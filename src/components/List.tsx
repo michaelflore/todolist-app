@@ -3,14 +3,11 @@ import { TodoI } from "../types/todo";
 
 interface ListProps {
     data: TodoI[];
-    deleteTodo: (todo: TodoI) => void;
+    deleteTodoState: (todo: TodoI) => void;
+    markTodoCompletedState: (todo: TodoI, value: boolean) => void;
 }
 
-function List( { data, deleteTodo }: ListProps) {
-
-    const deleteTodoState = (todo: TodoI) => {
-        deleteTodo(todo);
-    }
+function List( { data, deleteTodoState, markTodoCompletedState }: ListProps) {
 
     return (
         <div className="todolist">
@@ -20,7 +17,8 @@ function List( { data, deleteTodo }: ListProps) {
                         <Item
                             key={todo.id}
                             todo={todo}
-                            deleteTodoProp={deleteTodoState}
+                            deleteTodoState={deleteTodoState}
+                            markTodoCompletedState={markTodoCompletedState}
                         />
                     )
                 })

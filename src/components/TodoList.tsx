@@ -3,14 +3,20 @@ import { useEffect, useState } from "react";
 import List from "./List";
 import FilterButtons from "./FilterButtons";
 import InputForm from "./InputForm";
-import { fetchTodosAPI } from "../api/todo-api";
-import { TodoI } from "../types/todo";
 import SearchForm from "./SearchForm";
+
+import { fetchTodosAPI } from "../api/todo-api";
+
+import { TodoI } from "../types/todo";
+
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
+import Skeleton from "@mui/material/Skeleton";
 
 function TodoList() {
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [todosError, setTodosError] = useState("");
 
   const [todos, setTodos] = useState<TodoI[]>([]);
   const [filteredTodos, setFilteredTodos] = useState<TodoI[]>([]); //displayed
@@ -37,16 +43,16 @@ function TodoList() {
 
           setTodos(data);
           setFilteredTodos(data);
-          setError(false);
+          setTodosError("");
           setLoading(false);
-
+ 
         }
 
       } catch(err) {
 
         console.error("fetchTodos", err);
 
-        setError(true);
+        setTodosError("Something went wrong. Please try again.");
         setLoading(false);
 
       }
@@ -66,7 +72,7 @@ function TodoList() {
     setFilteredTodos(state => [todo, ...state]);
   }
 
-  const deleteTodo = (todo: TodoI) => {
+  const deleteTodoState = (todo: TodoI) => {
     setTodos(state => {
       return state.filter(value => value.id !== todo.id);
     });
@@ -75,6 +81,34 @@ function TodoList() {
       return state.filter(value => value.id !== todo.id);
     });
   };
+
+  const markTodoCompletedState = (todo: TodoI, value: boolean) => {
+    setTodos(state => {
+      return state.map((item) => {
+        if(item.id === todo.id) {
+          return {
+            ...item,
+            completed: value
+          }
+        } else {
+          return item;
+        }
+      })
+    });
+
+    setFilteredTodos(state => {
+      return state.map((item) => {
+        if(item.id === todo.id) {
+          return {
+            ...item,
+            completed: value
+          }
+        } else {
+          return item;
+        }
+      })
+    });
+  }
 
   // const sortByLikes = () => {
   //   setFilteredTodos(state => {
@@ -102,8 +136,8 @@ function TodoList() {
     setLoading(loading);
   }
 
-  const setErrorTodos = (error: boolean) => {
-    setError(error);
+  const setTodosErrorState = (error: string) => {
+    setTodosError(error);
   }
 
   const setTodosState = (data: TodoI[]) => {
@@ -111,48 +145,70 @@ function TodoList() {
     setFilteredTodos(data);
   }
 
+  const handleAlertClose = () => {
+    setTodosErrorState("");
+  }
+
   return (
     <div className="todolist-app">
-      <h1>My Todos</h1>
-      <InputForm
-        createNewTodo={createNewTodo}
-      />
-      <div className="search-and-filter">
-        <SearchForm
-          setLoadingTodos={setLoadingTodos}
-          setErrorTodos={setErrorTodos}
-          setTodosState={setTodosState}
+      <div className="container">
+        <h1>My Todos</h1>
+
+        <InputForm
+          createNewTodo={createNewTodo}
         />
-        <FilterButtons
-          filterAll={filterAll}
-        />
+
+        <div className="search-and-filter">
+          <SearchForm
+            setLoadingTodos={setLoadingTodos}
+            setTodosErrorState={setTodosErrorState}
+            setTodosState={setTodosState}
+          />
+          <FilterButtons
+            filterAll={filterAll}
+          />
+        </div>
+        {
+          loading ? (
+            <Skeleton
+              variant="rectangular"
+              width="100%"
+            >
+              <List
+                data={filteredTodos}
+                deleteTodoState={deleteTodoState}
+                markTodoCompletedState={markTodoCompletedState}
+              />
+            </Skeleton>
+          ) : (
+            <>
+              {
+                todosError ? (
+                  <Alert severity="error" onClose={handleAlertClose}>
+                    <AlertTitle>Error</AlertTitle>
+                    {
+                      todosError
+                    }
+                  </Alert>
+                ) : (
+                    <>
+                      {
+                        filteredTodos.length > 0 && (
+                          <List
+                            data={filteredTodos}
+                            deleteTodoState={deleteTodoState}
+                            markTodoCompletedState={markTodoCompletedState}
+                          />
+                        )
+                      }
+                    </>
+                )
+              }
+            </>
+          )
+        }
+
       </div>
-      {
-        loading ? (
-          <div>Loading...</div>
-        ) : (
-          <>
-            {
-              error ? (
-                <div>
-                  Something Went Wrong.
-                </div>
-              ) : (
-                <div className="container">
-                  {
-                    filteredTodos.length > 0 && (
-                      <List
-                        data={filteredTodos}
-                        deleteTodo={deleteTodo}
-                      />
-                    )
-                  }
-                </div>
-              )
-            }
-          </>
-        )
-      }
     </div>
   )
 }

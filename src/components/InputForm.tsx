@@ -1,6 +1,10 @@
 import { useState } from "react";
+
 import { TodoI } from "../types/todo";
+
 import { css } from "@emotion/react";
+
+import TextField from "@mui/material/TextField";
 
 interface InputFormProps {
     createNewTodo: (todo: TodoI) => void;
@@ -8,19 +12,6 @@ interface InputFormProps {
 
 const formStyles = css`
     margin-bottom: 0.2rem;
-`;
-
-const inputStyles = css`
-    background-color: rgba(0, 0, 0, 0.02);
-    padding: 0.5rem 1rem;
-    border: 2px solid #000;
-    color: #000;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-
-    &::placeholder {
-      color: rgba(0, 0, 0, 0.5);
-    }
 `;
 
 const submitStyles = css`
@@ -110,11 +101,37 @@ function InputForm({ createNewTodo }: InputFormProps) {
                 css={formStyles}
                 onSubmit={handleSubmit}
             >
-                <input
-                    css={inputStyles}
+
+                <TextField
+                    error={error ? true : false}
                     placeholder="Enter new todo..."
                     onChange={handleChange}
                     value={value}
+                    helperText={error}
+                    autoComplete="false"
+                    sx={{
+                        '& .MuiInputBase-input': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                          padding: '0.5rem 1rem',
+                          border: '2px solid #000',
+                          color: '#000',
+                          borderTopLeftRadius: '5px',
+                          borderBottomLeftRadius: '5px',
+                          height: 'auto',
+                          font: "revert",
+                          '&::placeholder': {
+                            color: 'rgba(0, 0, 0, 0.5)',
+                          },
+                        },
+                        "& .MuiOutlinedInput-notchedOutline": {
+                            border: '0'
+                        },
+                        "& .Mui-focused.MuiInputBase-formControl": {
+                            '& .MuiOutlinedInput-notchedOutline': {
+                                border: '0',  // Remove the focus outline border
+                            }
+                        }
+                    }}
                 />
 
                 <input
@@ -124,11 +141,6 @@ function InputForm({ createNewTodo }: InputFormProps) {
                     disabled={submitDisabled}
                 />
             </form>
-            {
-                error && (
-                    <p>{error}</p>
-                )
-            }
         </div>
     );
 }

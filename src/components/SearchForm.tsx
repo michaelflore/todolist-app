@@ -6,7 +6,7 @@ import { css } from "@emotion/react";
 
 interface SearchFormProps {
     setLoadingTodos: (loading: boolean) => void;
-    setErrorTodos: (error: boolean) => void;
+    setTodosErrorState: (error: string) => void;
     setTodosState: (data: TodoI[]) => void;
 }
 
@@ -27,7 +27,7 @@ const inputStyles = css`
   }
 `;
 
-export function SearchForm({ setLoadingTodos, setErrorTodos, setTodosState }: SearchFormProps) {
+export function SearchForm({ setLoadingTodos, setTodosErrorState, setTodosState }: SearchFormProps) {
 
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -62,7 +62,7 @@ export function SearchForm({ setLoadingTodos, setErrorTodos, setTodosState }: Se
       
                 setTodosState(data);
 
-                setErrorTodos(false);
+                setTodosErrorState("");
                 setLoadingTodos(false);
                 
               }
@@ -71,7 +71,7 @@ export function SearchForm({ setLoadingTodos, setErrorTodos, setTodosState }: Se
       
               console.error("fetchTodos", err);
       
-              setErrorTodos(true);
+              setTodosErrorState("Something went wrong. Please try again.");
               setLoadingTodos(false);
       
             }

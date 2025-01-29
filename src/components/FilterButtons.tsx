@@ -19,7 +19,7 @@ const buttonStyles = css`
     background-color: rgba(0, 0, 0, 0.05);
   }
 
-  &:focus {
+  &:active {
     outline: 2px solid #777777;
   }
 
