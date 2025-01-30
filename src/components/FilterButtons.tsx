@@ -2,6 +2,8 @@ import { css } from "@emotion/react";
 
 interface FilterButtonsProps {
     filterAll: () => void;
+    filterCompleted: () => void;
+    filterPending: () => void;
 }
 
 const buttonStyles = css`
@@ -28,12 +30,24 @@ const buttonStyles = css`
   }
 `;
 
-function FilterButtons({ filterAll }: FilterButtonsProps) {
+function FilterButtons({ filterAll, filterCompleted, filterPending }: FilterButtonsProps) {
 
     const handleClickAll = (e : React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
         filterAll();
+    }
+
+    const handleClickCompleted = (e : React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        filterCompleted();
+    }
+
+    const handleClickPending = (e : React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        filterPending();
     }
 
     return (
@@ -43,6 +57,18 @@ function FilterButtons({ filterAll }: FilterButtonsProps) {
                 onClick={handleClickAll}
             >
                 All
+            </button>
+            <button
+                css={buttonStyles}
+                onClick={handleClickCompleted}
+            >
+                Completed
+            </button>
+            <button
+                css={buttonStyles}
+                onClick={handleClickPending}
+            >
+                Pending
             </button>
         </div>
     )

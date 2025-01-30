@@ -52,13 +52,17 @@
   height: 100%;
 }
 
-.todolist__item-status todolist__item-status-cb {
-  border-radius: 50%;
+.todolist__item-status .todolist__item-status-cb.Mui-checked {
+  color: green;
 }
 
 .todolist__item-details {
   flex-grow: 1;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .todolist__item-actions {

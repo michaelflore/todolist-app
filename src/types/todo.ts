@@ -3,3 +3,8 @@ export interface TodoI {
     title: string;
     completed: boolean;
 }
+
+export interface TodoUpdatesI {
+    title?: string;
+    completed?: boolean;
+}

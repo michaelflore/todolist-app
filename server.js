@@ -9,7 +9,15 @@ server.use(function (req, res, next) {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
 });
-//Example
+// GET empty list
+server.get('/api/todolist/empty', (req, res) => {
+    const response = [];
+    setTimeout(() => {
+        res.status(200).jsonp(response);
+    }, 3000);
+});
+// GET list
+// GET search query
 server.get('/api/todolist', (req, res) => {
     if (req.query.search) {
         const filteredJokes = list.todoList.filter((todo) => {
@@ -20,21 +28,52 @@ server.get('/api/todolist', (req, res) => {
         return;
     }
     const response = list.todoList;
+    console.log(response);
     res.status(200).jsonp(response);
     return;
 });
+// POST new todo
 server.post('/api/todolist', (req, res) => {
     const newTodo = req.body;
     const response = list.todoList;
     response.unshift(newTodo);
     setTimeout(() => {
-        res.status(200).jsonp(newTodo);
+        res.status(200).jsonp(response[0]);
     }, 3000);
 });
-server.get('/api/empty', (req, res) => {
-    const response = [];
+// PATCH todo
+server.patch('/api/todolist/:todoId', (req, res) => {
+    const todoId = req.params.todoId;
+    const updatedTodo = req.body;
+    const response = list.todoList;
+    const index = response.findIndex(value => value.id === todoId);
+    if (index === -1) {
+        res.status(400).jsonp({ message: "Item not found." });
+        return;
+    }
+    const todo = response[index];
+    if (updatedTodo.title !== undefined) {
+        todo.title = updatedTodo.title;
+    }
+    if (updatedTodo.completed !== undefined) {
+        todo.completed = updatedTodo.completed;
+    }
     setTimeout(() => {
-        res.status(200).jsonp(response);
+        res.status(200).jsonp(todo);
+    }, 3000);
+});
+// Delete todo
+server.delete('/api/todolist/:todoId', (req, res) => {
+    const todoId = req.params.todoId;
+    const response = list.todoList;
+    const index = response.findIndex(value => value.id === todoId);
+    if (index === -1) {
+        res.status(400).jsonp({ message: "Item not found." });
+        return;
+    }
+    const deletedItem = response.splice(index, 1)[0];
+    setTimeout(() => {
+        res.status(200).jsonp(deletedItem);
     }, 3000);
 });
 server.use(middlewares);

@@ -2,9 +2,9 @@
 Material UI
 
 It comes packaged with default styles and uses emotion as its default styling engine
-Use the icons as well
+Use the material icons as well
 
-Need @emotion/styled as well
+Need to install @emotion/styled as well
 
 # Styling
 

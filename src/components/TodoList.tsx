@@ -19,7 +19,6 @@ function TodoList() {
   const [todosError, setTodosError] = useState("");
 
   const [todos, setTodos] = useState<TodoI[]>([]);
-  const [filteredTodos, setFilteredTodos] = useState<TodoI[]>([]); //displayed
 
   //will still get called on initial render, then after todos is updated
   useEffect(() => {
@@ -31,35 +30,35 @@ function TodoList() {
     const abortController = new AbortController();
     const signal = abortController.signal;
 
-    const fetchTodos = async () => {
+    (
+      async () => {
       
-      try {
-
-        setLoading(true);
-
-        const data = await fetchTodosAPI("", signal);
-
-        if(data && Array.isArray(data)) {
-
-          setTodos(data);
-          setFilteredTodos(data);
-          setTodosError("");
+        try {
+  
+          setLoading(true);
+  
+          const todos = await fetchTodosAPI("", signal);
+  
+          if(todos && Array.isArray(todos)) {
+  
+            setTodos(todos);
+  
+            setTodosError("");
+            setLoading(false);
+   
+          }
+  
+        } catch(err) {
+  
+          console.error("fetchTodos", err);
+  
+          setTodosError("Something went wrong. Please try again.");
           setLoading(false);
- 
+  
         }
-
-      } catch(err) {
-
-        console.error("fetchTodos", err);
-
-        setTodosError("Something went wrong. Please try again.");
-        setLoading(false);
-
+  
       }
-
-    }
-
-    fetchTodos();
+    )();
 
     return () => {
       abortController.abort("Mounted");
@@ -67,47 +66,28 @@ function TodoList() {
 
   }, []);
 
-  const createNewTodo = (todo: TodoI) => {
+  const addNewTodoState = (todo: TodoI) => {
     setTodos(state => [todo, ...state]);
-    setFilteredTodos(state => [todo, ...state]);
   }
 
   const deleteTodoState = (todo: TodoI) => {
     setTodos(state => {
       return state.filter(value => value.id !== todo.id);
     });
-
-    setFilteredTodos(state => {
-      return state.filter(value => value.id !== todo.id);
-    });
   };
 
-  const markTodoCompletedState = (todo: TodoI, value: boolean) => {
+  const updateTodoState = (updatedTodo: TodoI) => {
+
     setTodos(state => {
       return state.map((item) => {
-        if(item.id === todo.id) {
-          return {
-            ...item,
-            completed: value
-          }
+        if(item.id === updatedTodo.id) {
+          return updatedTodo;
         } else {
           return item;
         }
       })
     });
 
-    setFilteredTodos(state => {
-      return state.map((item) => {
-        if(item.id === todo.id) {
-          return {
-            ...item,
-            completed: value
-          }
-        } else {
-          return item;
-        }
-      })
-    });
   }
 
   // const sortByLikes = () => {
@@ -126,13 +106,22 @@ function TodoList() {
   //   })
   // }
 
+  //possibly need backend route for this
   const filterAll = () => {
     
-    setFilteredTodos(todos);
+    setTodos(todos);
 
   };
 
-  const setLoadingTodos = (loading: boolean) => {
+  const filterCompleted = () => {
+
+  };
+
+  const filterPending = () => {
+
+  };
+
+  const setLoadingTodosState = (loading: boolean) => {
     setLoading(loading);
   }
 
@@ -142,7 +131,6 @@ function TodoList() {
 
   const setTodosState = (data: TodoI[]) => {
     setTodos(data);
-    setFilteredTodos(data);
   }
 
   const handleAlertClose = () => {
@@ -155,17 +143,19 @@ function TodoList() {
         <h1>My Todos</h1>
 
         <InputForm
-          createNewTodo={createNewTodo}
+          addNewTodoState={addNewTodoState}
         />
 
         <div className="search-and-filter">
           <SearchForm
-            setLoadingTodos={setLoadingTodos}
+            setLoadingTodosState={setLoadingTodosState}
             setTodosErrorState={setTodosErrorState}
             setTodosState={setTodosState}
           />
           <FilterButtons
             filterAll={filterAll}
+            filterCompleted={filterCompleted}
+            filterPending={filterPending}
           />
         </div>
         {
@@ -175,9 +165,10 @@ function TodoList() {
               width="100%"
             >
               <List
-                data={filteredTodos}
+                data={todos}
                 deleteTodoState={deleteTodoState}
-                markTodoCompletedState={markTodoCompletedState}
+                updateTodoState={updateTodoState}
+                setLoadingTodosState={setLoadingTodosState}
               />
             </Skeleton>
           ) : (
@@ -193,11 +184,12 @@ function TodoList() {
                 ) : (
                     <>
                       {
-                        filteredTodos.length > 0 && (
+                        todos.length > 0 && (
                           <List
-                            data={filteredTodos}
+                            data={todos}
                             deleteTodoState={deleteTodoState}
-                            markTodoCompletedState={markTodoCompletedState}
+                            updateTodoState={updateTodoState}
+                            setLoadingTodosState={setLoadingTodosState}
                           />
                         )
                       }

@@ -5,7 +5,7 @@ import { TodoI } from "../types/todo";
 import { css } from "@emotion/react";
 
 interface SearchFormProps {
-    setLoadingTodos: (loading: boolean) => void;
+    setLoadingTodosState: (loading: boolean) => void;
     setTodosErrorState: (error: string) => void;
     setTodosState: (data: TodoI[]) => void;
 }
@@ -27,70 +27,71 @@ const inputStyles = css`
   }
 `;
 
-export function SearchForm({ setLoadingTodos, setTodosErrorState, setTodosState }: SearchFormProps) {
+export function SearchForm({ setLoadingTodosState, setTodosErrorState, setTodosState }: SearchFormProps) {
 
-    const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
-    const searchDebouncer = useRef<number | null>();
-    const abortControllerSearch = useRef<AbortController | null>();
+  const searchDebouncer = useRef<number | null>();
+  const abortControllerSearch = useRef<AbortController | null>();
 
-    const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(e.target.value);
-    
-        if(searchDebouncer.current) {
-          clearTimeout(searchDebouncer.current);
-        }
-    
-        if(abortControllerSearch.current) {
-          abortControllerSearch.current.abort("Canceled");
-        }
-    
-        searchDebouncer.current = window.setTimeout(() => {
-    
-          const abortController = new AbortController();
-          abortControllerSearch.current = abortController;
-          
-          const fetchTodos = async () => {
-            
+  const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(e.target.value);
+  
+      if(searchDebouncer.current) {
+        clearTimeout(searchDebouncer.current);
+      }
+  
+      if(abortControllerSearch.current) {
+        abortControllerSearch.current.abort("Canceled");
+      }
+  
+      searchDebouncer.current = window.setTimeout(() => {
+  
+        const abortController = new AbortController();
+        abortControllerSearch.current = abortController;
+        
+        (
+          async () => {
+
             try {
     
-              setLoadingTodos(true);
+              setLoadingTodosState(true);
     
-              const data = await fetchTodosAPI(e.target.value, abortController.signal);
+              const todos = await fetchTodosAPI(e.target.value, abortController.signal);
       
-              if(data && Array.isArray(data)) {
+              if(todos && Array.isArray(todos)) {
       
-                setTodosState(data);
+                setTodosState(todos);
 
                 setTodosErrorState("");
-                setLoadingTodos(false);
+                setLoadingTodosState(false);
                 
               }
       
-            } catch(err) {
+            } catch(e) {
       
-              console.error("fetchTodos", err);
+              console.error("fetchTodosSearch", e);
       
               setTodosErrorState("Something went wrong. Please try again.");
-              setLoadingTodos(false);
+              setLoadingTodosState(false);
       
             }
       
           }
-    
-          fetchTodos();
-        }, 500);
-      }
+        )();
 
-    return (
-        <input
-            css={inputStyles}
-            type="text"
-            placeholder="Search todo..."
-            value={searchTerm}
-            onChange={handleSearchTermChange}
-        />
-    )
+      }, 500);
+    }
+
+  return (
+    <input
+      css={inputStyles}
+      type="text"
+      placeholder="Search todo..."
+      value={searchTerm}
+      onChange={handleSearchTermChange}
+    />
+  )
 }
 
 export default SearchForm;

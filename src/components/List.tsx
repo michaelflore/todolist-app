@@ -4,10 +4,11 @@ import { TodoI } from "../types/todo";
 interface ListProps {
     data: TodoI[];
     deleteTodoState: (todo: TodoI) => void;
-    markTodoCompletedState: (todo: TodoI, value: boolean) => void;
+    updateTodoState: (updatedTodo: TodoI) => void;
+    setLoadingTodosState: (loading: boolean) => void;
 }
 
-function List( { data, deleteTodoState, markTodoCompletedState }: ListProps) {
+function List( { data, deleteTodoState, updateTodoState, setLoadingTodosState }: ListProps) {
 
     return (
         <div className="todolist">
@@ -18,7 +19,8 @@ function List( { data, deleteTodoState, markTodoCompletedState }: ListProps) {
                             key={todo.id}
                             todo={todo}
                             deleteTodoState={deleteTodoState}
-                            markTodoCompletedState={markTodoCompletedState}
+                            updateTodoState={updateTodoState}
+                            setLoadingTodosState={setLoadingTodosState}
                         />
                     )
                 })

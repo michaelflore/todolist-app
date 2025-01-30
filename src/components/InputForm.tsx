@@ -5,31 +5,39 @@ import { TodoI } from "../types/todo";
 import { css } from "@emotion/react";
 
 import TextField from "@mui/material/TextField";
+import { addTodoAPI } from "../api/todo-api";
 
 interface InputFormProps {
-    createNewTodo: (todo: TodoI) => void;
+    addNewTodoState: (todo: TodoI) => void;
 }
 
-const formStyles = css`
-    margin-bottom: 0.2rem;
-`;
+function InputForm({ addNewTodoState }: InputFormProps) {
 
-const submitStyles = css`
-    background-color: #000;
-    padding: 0.5rem 1rem;
-    border: 2px solid #000;
-    color: #fff;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    cursor: pointer;
-`;
-
-function InputForm({ createNewTodo }: InputFormProps) {
     const [value, setValue] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
     const [submitDisabled, setSubmitDisabled] = useState(false);
+
+    const formStyles = css`
+        margin-bottom: 0.2rem;
+    `;
+
+    const submitStyles = css`
+        background-color: #000;
+        padding: 0.5rem 1rem;
+        border: 2px solid #000;
+        color: #fff;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+        cursor: pointer;
+
+        &:disabled {
+            background-color: #777777;
+            border: 2px solid #777777;
+            cursor: default;
+        }
+    `;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setError("");
@@ -50,8 +58,7 @@ function InputForm({ createNewTodo }: InputFormProps) {
             const newTodo = {
                 id: window.crypto.randomUUID(),
                 title: value,
-                rating: 0,
-                likes: 0
+                completed: false
             };
 
             (
@@ -59,25 +66,19 @@ function InputForm({ createNewTodo }: InputFormProps) {
 
                     try {
 
-                        const response = await fetch("/api/todolist", {
-                            method: "POST",
-                            headers: {
-                                "Accept": "application/json",
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify(newTodo)
-                        });
-                    
-                        const data = await response.json();
+                        const data = await addTodoAPI(newTodo);
+                        
+                        if(data) {
+                            addNewTodoState(data);
+                        }
 
-                        createNewTodo(data);
     
                         clearForm();
                         setLoading(false);
                         setSubmitDisabled(false);
 
                     } catch(e) {
-                        console.error(e);
+                        console.error("addTodo", e);
 
                         setError("Something Went Wrong");
                         setLoading(false);
@@ -108,7 +109,7 @@ function InputForm({ createNewTodo }: InputFormProps) {
                     onChange={handleChange}
                     value={value}
                     helperText={error}
-                    autoComplete="false"
+                    autoComplete="off"
                     sx={{
                         '& .MuiInputBase-input': {
                           backgroundColor: 'rgba(0, 0, 0, 0.02)',

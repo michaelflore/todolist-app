@@ -11,14 +11,20 @@ import Checkbox from "@mui/material/Checkbox";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+import { deleteTodoAPI, updateTodoAPI } from "../api/todo-api";
+import CircularProgress from "@mui/material/CircularProgress";
+import Alert from "@mui/material/Alert";
 
 interface ItemProps {
     todo: TodoI;
     deleteTodoState: (todo: TodoI) => void;
-    markTodoCompletedState: (todo: TodoI, value: boolean) => void;
+    updateTodoState: (updatedTodo: TodoI) => void;
+    setLoadingTodosState: (loading: boolean) => void;
 }
 
-function Item({ todo, deleteTodoState, markTodoCompletedState } : ItemProps) {
+function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
 
     const deleteTodoButtonStyles = css`
         background-color: rgba(0, 0, 0, 0.02);
@@ -44,16 +50,49 @@ function Item({ todo, deleteTodoState, markTodoCompletedState } : ItemProps) {
     `;
 
     const todoTitleStyles = css`
-        text-decoration: ${todo.completed === true ? 'line-through' : 'none'}
+        margin: 0;
+        text-decoration: ${todo.completed === true ? 'line-through' : 'none'};
     `;
 
     const [open, setOpen] = useState(false);
-    const [completed, setCompleted] = useState(false);
+
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
     const confirmDeleteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
-        deleteTodoState(todo);
+        setOpen(false);
+
+        (
+            async () => {
+
+                try {
+
+                    setLoading(true);
+
+                    const deletedTodo = await deleteTodoAPI(todo.id);
+                    console.log(deletedTodo);
+
+                    if(deletedTodo) {
+                        deleteTodoState(deletedTodo);
+
+                        setError("");
+                        setLoading(false);
+                    }
+
+
+
+                } catch(e) {
+                    console.error("deleteTodo", e);
+
+                    setError("Something went wrong. Please try again.");
+                    setLoading(false);
+                }
+
+            }
+        )();
+
     }
 
     const handleDeleteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -67,31 +106,85 @@ function Item({ todo, deleteTodoState, markTodoCompletedState } : ItemProps) {
     }
 
     const handleCheckChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setCompleted(e.target.checked);
 
-        markTodoCompletedState(todo, e.target.checked);
+        (
+            async () => {
+
+                try {
+
+                    setLoading(true);
+
+                    const updatedTodo = await updateTodoAPI(todo.id, { completed: e.target.checked });
+
+                    if(updatedTodo) {
+
+                        updateTodoState(updatedTodo);
+
+                        setError("");
+                        setLoading(false);
+                    }
+
+
+
+                } catch(e) {
+
+                    console.error("updateTodo", e);
+
+                    setError("Something went wrong. Please try again.")
+                    setLoading(false);
+
+                }
+
+            }
+        )();
+
     }
 
     return (
         <div className="todolist__item">
             <div className="todolist__item-status">
-                <Checkbox
-                    aria-label="mark complete"
-                    checked={completed}
-                    onChange={handleCheckChange}
-                    className="todolist__item-status-cb"
-                />
+                {
+                    loading ? (
+                        <CircularProgress
+                            size="24px"
+                            color="inherit"
+                        />
+                    ) : (
+                        <Checkbox
+                            aria-label="mark complete"
+                            checked={todo.completed}
+                            onChange={handleCheckChange}
+                            className="todolist__item-status-cb"
+                            icon={<RadioButtonUncheckedIcon />}
+                            checkedIcon={<CheckCircleIcon />}
+                        />
+                    )
+                }
             </div>
             <div className="todolist__item-details">
+                {
+                    error && (
+                        <Alert icon={false} severity="error">{error}</Alert>
+                    )
+                }
                 <h2 css={todoTitleStyles}>{todo.title}</h2>
             </div>
             <div className="todolist__item-actions">
-                <button
-                    css={deleteTodoButtonStyles}
-                    onClick={handleDeleteClick}
-                >
-                    <DeleteIcon className="trash-icon" />
-                </button>
+                {
+                    loading ? (
+                        <CircularProgress
+                            size="24px"
+                            color="inherit"
+                        />
+                    ) : (
+                        <button
+                            css={deleteTodoButtonStyles}
+                            onClick={handleDeleteClick}
+                        >
+                            <DeleteIcon className="trash-icon" />
+                        </button>
+                    )
+                }
             </div>
             <Modal
                 open={open}
