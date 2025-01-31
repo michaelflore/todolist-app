@@ -52,8 +52,16 @@
   height: 100%;
 }
 
+.todolist__item-status .todolist__item-status-cb {
+  color: #000;
+}
+
 .todolist__item-status .todolist__item-status-cb.Mui-checked {
   color: green;
+}
+
+.todolist__item-status .todolist__item-status-cb.Mui-disabled {
+  color: #777777;
 }
 
 .todolist__item-details {

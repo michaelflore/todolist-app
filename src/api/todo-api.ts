@@ -1,20 +1,50 @@
-import { TodoI, TodoUpdatesI } from "../types/todo";
+import { TodoI, TodoUpdatesI, filterStatusType } from "../types/todo";
 
-export const fetchTodosAPI = async (searchTerm: string, signal: AbortSignal) => {
+interface Query {
+  search?: string;
+  filter?: filterStatusType;
+}
+
+export const fetchTodosAPI = async (filterTerm: filterStatusType, searchTerm: string, signal: AbortSignal | null) => {
 
   try {
     let url = "/api/todolist";
 
-    const searchQuery = searchTerm ? `?search=${searchTerm}` : "";
+    const query: Query = {};
 
-    if(searchQuery) {
-      url = url + searchQuery;
+    if(searchTerm) {
+      query.search = searchTerm;
     }
 
-    const response = await fetch(url, {
-      method: "GET",
-      signal: signal
-    });
+    if(filterTerm) {
+      query.filter = filterTerm;
+    }
+
+    if(Object.keys(query).length > 0) {
+      url = url + "?";
+
+      const entries = Object.entries(query);
+
+      entries.forEach((entry, index) => {
+        const [key, value] = entry;
+
+        url = url + `${key}=${value}`
+
+        if(index !== entries.length - 1) {
+          url = url + "&";
+        }
+      });
+    }
+
+    const options: RequestInit = {
+      method: "GET"
+    }
+
+    if(signal !== null) {
+      options.signal = signal;
+    }
+
+    const response = await fetch(url, options);
 
     const data = await response.json();
 

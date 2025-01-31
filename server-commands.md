@@ -5,6 +5,53 @@ Curl in powershell 7
 curl.exe -X GET "http://localhost:5000/api/todolist"
 ```
 
+### GET todo list search query
+```
+curl.exe -X GET "http://localhost:5000/api/todolist?search=groceries"
+```
+
+Response:
+[
+  {
+    "id": "63980a8e-5538-4e70-a9bd-c16e6a947129",
+    "title": "Buy groceries",
+    "completed": true
+  }
+]
+
+### GET todo list filter query
+```
+curl.exe -X GET "http://localhost:5000/api/todolist?filter=completed"
+```
+
+Response:
+[
+  {
+    "id": "2e70d95c-11b4-494b-ad69-026acc309a08",
+    "title": "Complete project report",
+    "completed": true
+  },
+  {
+    "id": "63980a8e-5538-4e70-a9bd-c16e6a947129",
+    "title": "Buy groceries",
+    "completed": true
+  }
+]
+
+### GET todo list filter query
+```
+curl.exe -X GET "http://localhost:5000/api/todolist?filter=completed&search=groceries"
+```
+
+Response:
+[
+  {
+    "id": "63980a8e-5538-4e70-a9bd-c16e6a947129",
+    "title": "Buy groceries",
+    "completed": true
+  }
+]
+
 ### POST a todo
 Generate random uuid
 ```

@@ -7,7 +7,7 @@ import SearchForm from "./SearchForm";
 
 import { fetchTodosAPI } from "../api/todo-api";
 
-import { TodoI } from "../types/todo";
+import { filterStatusType, TodoI } from "../types/todo";
 
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
@@ -19,6 +19,9 @@ function TodoList() {
   const [todosError, setTodosError] = useState("");
 
   const [todos, setTodos] = useState<TodoI[]>([]);
+
+  const [activeFilter, setActiveFilter] = useState<filterStatusType>("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   //will still get called on initial render, then after todos is updated
   useEffect(() => {
@@ -37,7 +40,7 @@ function TodoList() {
   
           setLoading(true);
   
-          const todos = await fetchTodosAPI("", signal);
+          const todos = await fetchTodosAPI("", "", signal);
   
           if(todos && Array.isArray(todos)) {
   
@@ -106,21 +109,6 @@ function TodoList() {
   //   })
   // }
 
-  //possibly need backend route for this
-  const filterAll = () => {
-    
-    setTodos(todos);
-
-  };
-
-  const filterCompleted = () => {
-
-  };
-
-  const filterPending = () => {
-
-  };
-
   const setLoadingTodosState = (loading: boolean) => {
     setLoading(loading);
   }
@@ -131,6 +119,14 @@ function TodoList() {
 
   const setTodosState = (data: TodoI[]) => {
     setTodos(data);
+  }
+
+  const setActiveFilterState = (filterTerm: filterStatusType) => {
+    setActiveFilter(filterTerm);
+  }
+
+  const setSearchTermState = (value: string) => {
+    setSearchTerm(value);
   }
 
   const handleAlertClose = () => {
@@ -148,14 +144,20 @@ function TodoList() {
 
         <div className="search-and-filter">
           <SearchForm
+            activeFilter={activeFilter}
             setLoadingTodosState={setLoadingTodosState}
             setTodosErrorState={setTodosErrorState}
             setTodosState={setTodosState}
+            searchTerm={searchTerm}
+            setSearchTermState={setSearchTermState}
           />
           <FilterButtons
-            filterAll={filterAll}
-            filterCompleted={filterCompleted}
-            filterPending={filterPending}
+            activeFilter={activeFilter}
+            setActiveFilterState={setActiveFilterState}
+            setLoadingTodosState={setLoadingTodosState}
+            setTodosErrorState={setTodosErrorState}
+            setTodosState={setTodosState}
+            searchTerm={searchTerm}
           />
         </div>
         {
@@ -182,18 +184,18 @@ function TodoList() {
                     }
                   </Alert>
                 ) : (
-                    <>
-                      {
-                        todos.length > 0 && (
-                          <List
-                            data={todos}
-                            deleteTodoState={deleteTodoState}
-                            updateTodoState={updateTodoState}
-                            setLoadingTodosState={setLoadingTodosState}
-                          />
-                        )
-                      }
-                    </>
+                  <>
+                    {
+                      todos.length > 0 && (
+                        <List
+                          data={todos}
+                          deleteTodoState={deleteTodoState}
+                          updateTodoState={updateTodoState}
+                          setLoadingTodosState={setLoadingTodosState}
+                        />
+                      )
+                    }
+                  </>
                 )
               }
             </>

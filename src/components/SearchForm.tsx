@@ -1,13 +1,16 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { fetchTodosAPI } from "../api/todo-api";
-import { TodoI } from "../types/todo";
+import { filterStatusType, TodoI } from "../types/todo";
 
 import { css } from "@emotion/react";
 
 interface SearchFormProps {
-    setLoadingTodosState: (loading: boolean) => void;
-    setTodosErrorState: (error: string) => void;
-    setTodosState: (data: TodoI[]) => void;
+  activeFilter: filterStatusType;
+  setLoadingTodosState: (loading: boolean) => void;
+  setTodosErrorState: (error: string) => void;
+  setTodosState: (data: TodoI[]) => void;
+  searchTerm: string;
+  setSearchTermState:(value: string) => void;
 }
 
 const inputStyles = css`
@@ -27,15 +30,13 @@ const inputStyles = css`
   }
 `;
 
-export function SearchForm({ setLoadingTodosState, setTodosErrorState, setTodosState }: SearchFormProps) {
-
-  const [searchTerm, setSearchTerm] = useState("");
+export function SearchForm({ activeFilter, setLoadingTodosState, setTodosErrorState, setTodosState, searchTerm, setSearchTermState }: SearchFormProps) {
 
   const searchDebouncer = useRef<number | null>();
   const abortControllerSearch = useRef<AbortController | null>();
 
   const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchTerm(e.target.value);
+      setSearchTermState(e.target.value);
   
       if(searchDebouncer.current) {
         clearTimeout(searchDebouncer.current);
@@ -57,7 +58,7 @@ export function SearchForm({ setLoadingTodosState, setTodosErrorState, setTodosS
     
               setLoadingTodosState(true);
     
-              const todos = await fetchTodosAPI(e.target.value, abortController.signal);
+              const todos = await fetchTodosAPI(activeFilter, e.target.value, abortController.signal);
       
               if(todos && Array.isArray(todos)) {
       

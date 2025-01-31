@@ -25,25 +25,37 @@ server.get( '/api/todolist/empty', (req, res) => {
 
 // GET list
 // GET search query
+// GET filter query
 server.get( '/api/todolist', (req, res) => {
 
-    if(req.query.search) {
-        const filteredJokes = list.todoList.filter((todo) => {
-            const query = (req.query.search as string).toLowerCase();
-            
-            return todo.title.toLowerCase().includes(query);
-        });
+    let todolist = list.todoList;
 
-        res.status(200).jsonp(filteredJokes);
+    if(req.query.filter) {
+        const query = (req.query.filter as string);
 
-        return;
+        if(query === "completed") {
+            todolist = todolist.filter((todo) => {
+                return todo.completed === true;
+            });
+        }
+
+        if(query === "pending") {
+            todolist = todolist.filter((todo) => {
+                return todo.completed === false;
+            });
+        }
+
     }
 
-    const response = list.todoList;
+    if(req.query.search) {
+        const query = (req.query.search as string).toLowerCase();
 
-    res.status(200).jsonp(response);
+        todolist = todolist.filter((todo) => {
+            return todo.title.toLowerCase().includes(query);
+        });
+    }
 
-    return;
+    res.status(200).jsonp(todolist);
 });
 
 // POST new todo

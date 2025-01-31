@@ -18,19 +18,29 @@ server.get('/api/todolist/empty', (req, res) => {
 });
 // GET list
 // GET search query
+// GET filter query
 server.get('/api/todolist', (req, res) => {
+    let todolist = list.todoList;
+    if (req.query.filter) {
+        const query = req.query.filter;
+        if (query === "completed") {
+            todolist = todolist.filter((todo) => {
+                return todo.completed === true;
+            });
+        }
+        if (query === "pending") {
+            todolist = todolist.filter((todo) => {
+                return todo.completed === false;
+            });
+        }
+    }
     if (req.query.search) {
-        const filteredJokes = list.todoList.filter((todo) => {
-            const query = req.query.search.toLowerCase();
+        const query = req.query.search.toLowerCase();
+        todolist = todolist.filter((todo) => {
             return todo.title.toLowerCase().includes(query);
         });
-        res.status(200).jsonp(filteredJokes);
-        return;
     }
-    const response = list.todoList;
-    console.log(response);
-    res.status(200).jsonp(response);
-    return;
+    res.status(200).jsonp(todolist);
 });
 // POST new todo
 server.post('/api/todolist', (req, res) => {

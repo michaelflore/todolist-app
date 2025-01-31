@@ -47,6 +47,14 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
         &:focus-visible {
             outline: 2px solid #777777;
         }
+
+        &:disabled {
+            cursor: default;
+
+            .trash-icon {
+                color: #777777;
+            }
+        }
     `;
 
     const todoTitleStyles = css`
@@ -56,7 +64,12 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
 
     const [open, setOpen] = useState(false);
 
-    const [loading, setLoading] = useState(false);
+    const [editLoading, setEditLoading] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState(false);
+
+    const [deleteBtnDisabled, setDeleteButtonDisabled] = useState(false);
+    const [checkboxDisabled, setCheckboxDisabled] = useState(false);
+
     const [error, setError] = useState("");
 
     const confirmDeleteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -69,25 +82,26 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
 
                 try {
 
-                    setLoading(true);
+                    setDeleteLoading(true);
+                    setCheckboxDisabled(true);
 
                     const deletedTodo = await deleteTodoAPI(todo.id);
-                    console.log(deletedTodo);
 
                     if(deletedTodo) {
                         deleteTodoState(deletedTodo);
 
                         setError("");
-                        setLoading(false);
+                        setDeleteLoading(false);
+                        setCheckboxDisabled(false);
                     }
-
 
 
                 } catch(e) {
                     console.error("deleteTodo", e);
 
                     setError("Something went wrong. Please try again.");
-                    setLoading(false);
+                    setDeleteLoading(false);
+                    setCheckboxDisabled(false);
                 }
 
             }
@@ -112,7 +126,8 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
 
                 try {
 
-                    setLoading(true);
+                    setEditLoading(true);
+                    setDeleteButtonDisabled(true);
 
                     const updatedTodo = await updateTodoAPI(todo.id, { completed: e.target.checked });
 
@@ -121,7 +136,8 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
                         updateTodoState(updatedTodo);
 
                         setError("");
-                        setLoading(false);
+                        setEditLoading(false);
+                        setDeleteButtonDisabled(false);
                     }
 
 
@@ -131,7 +147,8 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
                     console.error("updateTodo", e);
 
                     setError("Something went wrong. Please try again.")
-                    setLoading(false);
+                    setEditLoading(false);
+                    setDeleteButtonDisabled(false);
 
                 }
 
@@ -144,7 +161,7 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
         <div className="todolist__item">
             <div className="todolist__item-status">
                 {
-                    loading ? (
+                    editLoading ? (
                         <CircularProgress
                             size="24px"
                             color="inherit"
@@ -157,6 +174,7 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
                             className="todolist__item-status-cb"
                             icon={<RadioButtonUncheckedIcon />}
                             checkedIcon={<CheckCircleIcon />}
+                            disabled={checkboxDisabled}
                         />
                     )
                 }
@@ -171,7 +189,7 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
             </div>
             <div className="todolist__item-actions">
                 {
-                    loading ? (
+                    deleteLoading ? (
                         <CircularProgress
                             size="24px"
                             color="inherit"
@@ -180,6 +198,7 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
                         <button
                             css={deleteTodoButtonStyles}
                             onClick={handleDeleteClick}
+                            disabled={deleteBtnDisabled}
                         >
                             <DeleteIcon className="trash-icon" />
                         </button>
