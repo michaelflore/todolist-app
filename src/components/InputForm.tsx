@@ -57,7 +57,7 @@ function InputForm({ addNewTodoState }: InputFormProps) {
             setSubmitDisabled(true);
            
             const newTodo = {
-                id: window.crypto.randomUUID(),
+                id: window.crypto.randomUUID(), 
                 title: value,
                 completed: false
             };

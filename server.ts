@@ -82,6 +82,8 @@ server.post( '/api/todolist', (req, res) => {
 
     const response = list.todoList;
 
+    // add uuid
+
     response.unshift(newTodo);
 
     setTimeout(() => {

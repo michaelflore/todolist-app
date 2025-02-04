@@ -4,6 +4,11 @@ export interface TodoI {
     completed: boolean;
 }
 
+export interface TodoAddI {
+    title: string;
+    completed: boolean;
+}
+
 export interface TodoUpdatesI {
     title?: string;
     completed?: boolean;

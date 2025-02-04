@@ -2,18 +2,21 @@ import { useEffect, useState } from "react";
 
 import List from "./List";
 import FilterButtons from "./FilterButtons";
-import InputForm from "./InputForm";
 import SearchForm from "./SearchForm";
 
 import { fetchTodosAPI } from "../api/todo-api";
 
 import { filterStatusType, TodoI } from "../types/todo";
 
+import { css } from "@emotion/react";
+
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Skeleton from "@mui/material/Skeleton";
 
-import { useLocation } from "react-router";
+import AddIcon from "@mui/icons-material/Add";
+
+import { useLocation, Link } from "react-router";
 
 function TodoList() {
 
@@ -28,6 +31,41 @@ function TodoList() {
 
   const [activeFilter, setActiveFilter] = useState<filterStatusType>("");
   const [searchTerm, setSearchTerm] = useState("");
+
+  const addLinkStyles = css`
+    background-color:rgb(204, 0, 255);
+    padding: 0.4em 1.2em;
+    font-size: 1em;
+    line-height: 1em;
+    font-weight: 500;
+    border: 1px solid transparent;
+    color: #fff;
+    border-radius: 5px;
+    transition: background-color 0.25s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+
+    & .add-icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    &:hover {
+      background-color: rgb(204, 0, 255, 0.7);
+      color: #fff;
+    }
+
+    &:active {
+      outline: 2px solid rgb(204, 0, 255, 0.7);
+    }
+
+    &:focus-visible {
+      outline: 2px solid #000;
+    }
+
+  `;
 
   //will still get called on initial render, then after todos is updated
   useEffect(() => {
@@ -150,9 +188,7 @@ function TodoList() {
   }
 
   return (
-    <div className="todolist-app">
-      <div className="container">
-        <h1>My Todos</h1>
+      <div className="home-page">
         {
           updatedTodoSuccessMessage && (
             <Alert
@@ -166,11 +202,6 @@ function TodoList() {
             </Alert>
           )
         }
-
-        <InputForm
-          addNewTodoState={addNewTodoState}
-        />
-
         <div className="search-and-filter">
           <SearchForm
             activeFilter={activeFilter}
@@ -188,6 +219,12 @@ function TodoList() {
             setTodosState={setTodosState}
             searchTerm={searchTerm}
           />
+          <Link
+            css={addLinkStyles}
+            to="/add"
+          >
+            <AddIcon className="add-icon" />Add Todo
+          </Link>
         </div>
         {
           loading ? (
@@ -232,7 +269,6 @@ function TodoList() {
         }
 
       </div>
-    </div>
   )
 }
 

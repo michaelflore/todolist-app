@@ -1,4 +1,4 @@
-import { TodoI, TodoUpdatesI, filterStatusType } from "../types/todo";
+import { TodoAddI, TodoUpdatesI, filterStatusType } from "../types/todo";
 
 interface Query {
   search?: string;
@@ -87,7 +87,7 @@ export const fetchTodosAPI = async (filterTerm: filterStatusType, searchTerm: st
 
 }
 
-export const addTodoAPI = async (newTodo: TodoI) => {
+export const addTodoAPI = async (newTodo: TodoAddI) => {
 
   try {
     const url = "/api/todolist";
