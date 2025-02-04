@@ -9,13 +9,17 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Checkbox from "@mui/material/Checkbox";
 
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+
 import { deleteTodoAPI, updateTodoAPI } from "../api/todo-api";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
+
+import { Link } from "react-router";
 
 interface ItemProps {
     todo: TodoI;
@@ -26,7 +30,7 @@ interface ItemProps {
 
 function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
 
-    const deleteTodoButtonStyles = css`
+    const actionButtonStyles = css`
         background-color: rgba(0, 0, 0, 0.02);
         border: 1px solid transparent;
         color: #000;
@@ -35,6 +39,12 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
         cursor: pointer;
         width: 40px;
         height: 40px;
+
+        &.edit-todo-link.disabled {
+            .edit-icon {
+                color: #777777;
+            }
+        }
 
         &:hover {
             background-color: rgba(0, 0, 0, 0.05);
@@ -67,6 +77,7 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
     const [editLoading, setEditLoading] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
 
+    const [editLinkDisabled, setEditLinkDisabled] = useState(false);
     const [deleteBtnDisabled, setDeleteButtonDisabled] = useState(false);
     const [checkboxDisabled, setCheckboxDisabled] = useState(false);
 
@@ -127,6 +138,7 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
                 try {
 
                     setEditLoading(true);
+                    setEditLinkDisabled(true);
                     setDeleteButtonDisabled(true);
 
                     const updatedTodo = await updateTodoAPI(todo.id, { completed: e.target.checked });
@@ -137,6 +149,7 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
 
                         setError("");
                         setEditLoading(false);
+                        setEditLinkDisabled(false);
                         setDeleteButtonDisabled(false);
                     }
 
@@ -148,6 +161,7 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
 
                     setError("Something went wrong. Please try again.")
                     setEditLoading(false);
+                    setEditLinkDisabled(false);
                     setDeleteButtonDisabled(false);
 
                 }
@@ -195,13 +209,22 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
                             color="inherit"
                         />
                     ) : (
-                        <button
-                            css={deleteTodoButtonStyles}
-                            onClick={handleDeleteClick}
-                            disabled={deleteBtnDisabled}
-                        >
-                            <DeleteIcon className="trash-icon" />
-                        </button>
+                        <>
+                            <Link
+                                css={actionButtonStyles}
+                                to={editLinkDisabled ? "" : "/edit/" + todo.id}
+                                className={editLinkDisabled ? "edit-todo-link disabled" : "edit-todo-link"}
+                            >
+                                <EditIcon className="edit-icon" />
+                            </Link>
+                            <button
+                                css={actionButtonStyles}
+                                onClick={handleDeleteClick}
+                                disabled={deleteBtnDisabled}
+                            >
+                                <DeleteIcon className="trash-icon" />
+                            </button>
+                        </>
                     )
                 }
             </div>

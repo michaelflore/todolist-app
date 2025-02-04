@@ -5,6 +5,33 @@ interface Query {
   filter?: filterStatusType;
 }
 
+export const fetchTodoAPI = async (todoId: string, signal: AbortSignal) => {
+
+  try {
+    const url = "/api/todolist/" + todoId;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      },
+      signal: signal
+    });
+
+    const data = await response.json();
+
+    return data;
+
+  } catch (err) {
+
+    if(err instanceof Error) {
+      console.error("fetchTodoAPI", err);
+    }
+    
+  }
+
+}
+
 export const fetchTodosAPI = async (filterTerm: filterStatusType, searchTerm: string, signal: AbortSignal | null) => {
 
   try {

@@ -77,7 +77,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100px;
+  column-gap: 1rem;
+  width: 130px;
   height: 100%;
 }
 
@@ -101,6 +102,61 @@
   justify-content: center;
   align-items: center;
   column-gap: 1rem;
+}
+
+.edit-todo-link {
+  padding-block: 1px;
+  padding-inline: 6px;
+  letter-spacing: normal;
+  word-spacing: normal;
+  line-height: normal;
+  text-transform: none;
+  text-indent: 0px;
+  text-shadow: none;
+  display: inline-block;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.edit-todo-page__header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 1rem;
+}
+
+.edit-todo-page__header-title {
+  margin: 0;
+}
+
+.MuiSvgIcon-root.back-icon {
+  color: rgb(25, 118, 210);
+}
+
+.MuiSvgIcon-root.success-close-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.MuiAlert-root.todo-success-alert {
+  margin-bottom: 1rem;
+}
+
+.form-group-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.MuiFormControl-root.form-group {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.MuiSvgIcon-root.edit-icon {
+  color: rgb(0, 170, 255);
+  width: 100%;
+  height: 100%;
 }
 
 .MuiSvgIcon-root.trash-icon {

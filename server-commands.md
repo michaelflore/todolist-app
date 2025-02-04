@@ -5,6 +5,18 @@ Curl in powershell 7
 curl.exe -X GET "http://localhost:5000/api/todolist"
 ```
 
+### GET a todo
+```
+curl.exe -X GET "http://localhost:5000/api/todolist/2e70d95c-11b4-494b-ad69-026acc309a08"
+```
+
+Response:
+{
+  "id": "2e70d95c-11b4-494b-ad69-026acc309a08",
+  "title": "Complete project report",
+  "completed": true
+}
+
 ### GET todo list search query
 ```
 curl.exe -X GET "http://localhost:5000/api/todolist?search=groceries"
@@ -66,9 +78,9 @@ curl.exe -X POST "http://localhost:5000/api/todolist" `
 
 Payload:
 {
-    "id": "d7e81feb-3056-4bfe-b8e1-b9d33f62dd86",
-    "title": "Buy pc",
-    "completed": false
+  "id": "d7e81feb-3056-4bfe-b8e1-b9d33f62dd86",
+  "title": "Buy pc",
+  "completed": false
 }
 
 Response:
@@ -87,7 +99,7 @@ curl.exe -X PATCH "http://localhost:5000/api/todolist/2e70d95c-11b4-494b-ad69-02
 
 Payload:
 {
-    "completed": true
+  "completed": true
 }
 
 Response:

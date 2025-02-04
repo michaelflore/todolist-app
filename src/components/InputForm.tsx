@@ -5,6 +5,7 @@ import { TodoI } from "../types/todo";
 import { css } from "@emotion/react";
 
 import TextField from "@mui/material/TextField";
+
 import { addTodoAPI } from "../api/todo-api";
 
 interface InputFormProps {
@@ -69,13 +70,13 @@ function InputForm({ addNewTodoState }: InputFormProps) {
                         const data = await addTodoAPI(newTodo);
                         
                         if(data) {
+                            clearForm();
+                            setLoading(false);
+                            setSubmitDisabled(false);
                             addNewTodoState(data);
                         }
 
     
-                        clearForm();
-                        setLoading(false);
-                        setSubmitDisabled(false);
 
                     } catch(e) {
                         console.error("addTodo", e);

@@ -13,7 +13,13 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Skeleton from "@mui/material/Skeleton";
 
+import { useLocation } from "react-router";
+
 function TodoList() {
+
+  const location = useLocation();
+
+  const [updatedTodoSuccessMessage, setUpdatedTodoSuccessMessage] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [todosError, setTodosError] = useState("");
@@ -32,6 +38,11 @@ function TodoList() {
 
     const abortController = new AbortController();
     const signal = abortController.signal;
+
+    if(location.state) {
+      setUpdatedTodoSuccessMessage(location.state);
+      window.history.replaceState({}, "");
+    }
 
     (
       async () => {
@@ -61,6 +72,7 @@ function TodoList() {
         }
   
       }
+
     )();
 
     return () => {
@@ -133,10 +145,27 @@ function TodoList() {
     setTodosErrorState("");
   }
 
+  const handleAlertSuccessClose = () => {
+    setUpdatedTodoSuccessMessage("");
+  }
+
   return (
     <div className="todolist-app">
       <div className="container">
         <h1>My Todos</h1>
+        {
+          updatedTodoSuccessMessage && (
+            <Alert
+              severity="success"
+              onClose={handleAlertSuccessClose}
+              className="todo-success-alert"
+            >
+              {
+                updatedTodoSuccessMessage
+              }
+            </Alert>
+          )
+        }
 
         <InputForm
           addNewTodoState={addNewTodoState}

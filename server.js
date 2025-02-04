@@ -42,6 +42,19 @@ server.get('/api/todolist', (req, res) => {
     }
     res.status(200).jsonp(todolist);
 });
+// GET a todo
+server.get('/api/todolist/:todoId', (req, res) => {
+    const todoId = req.params.todoId;
+    const response = list.todoList;
+    const todo = response.find(value => value.id === todoId);
+    if (todo === undefined) {
+        res.status(400).jsonp({ message: "Item not found." });
+        return;
+    }
+    setTimeout(() => {
+        res.status(200).jsonp(todo);
+    }, 3000);
+});
 // POST new todo
 server.post('/api/todolist', (req, res) => {
     const newTodo = req.body;
