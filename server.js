@@ -1,6 +1,7 @@
 import jsonServer from "json-server";
 const server = jsonServer.create();
 const middlewares = jsonServer.defaults();
+import crypto from "crypto";
 import list from "./mockdata.json" assert { type: "json" };
 server.use(jsonServer.bodyParser);
 server.use(function (req, res, next) {
@@ -57,7 +58,14 @@ server.get('/api/todolist/:todoId', (req, res) => {
 });
 // POST new todo
 server.post('/api/todolist', (req, res) => {
-    const newTodo = req.body;
+    const todoBody = req.body;
+    // add uuid
+    const genId = crypto.randomUUID();
+    const newTodo = {
+        id: genId,
+        title: todoBody.title,
+        completed: todoBody.completed
+    };
     const response = list.todoList;
     response.unshift(newTodo);
     setTimeout(() => {

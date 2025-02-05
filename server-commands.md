@@ -1,5 +1,10 @@
 Curl in powershell 7
 
+### Start server
+```
+npm run server
+```
+
 ### GET todo list
 ```
 curl.exe -X GET "http://localhost:5000/api/todolist"
@@ -50,7 +55,7 @@ Response:
   }
 ]
 
-### GET todo list filter query
+### GET todo list filter and search query
 ```
 curl.exe -X GET "http://localhost:5000/api/todolist?filter=completed&search=groceries"
 ```
@@ -65,7 +70,7 @@ Response:
 ]
 
 ### POST a todo
-Generate random uuid
+Generate random uuid through the command line if needed
 ```
 node -e "console.log(require('crypto').randomUUID())"
 ```
@@ -73,19 +78,18 @@ node -e "console.log(require('crypto').randomUUID())"
 ```
 curl.exe -X POST "http://localhost:5000/api/todolist" `
     -H "Content-Type: application/json" `
-    -d '{"id": "d7e81feb-3056-4bfe-b8e1-b9d33f62dd86", "title": "Buy pc", "completed": false}'
+    -d '{"title": "Buy pc", "completed": false}'
 ```
 
 Payload:
 {
-  "id": "d7e81feb-3056-4bfe-b8e1-b9d33f62dd86",
   "title": "Buy pc",
   "completed": false
 }
 
 Response:
 {
-  "id": "d7e81feb-3056-4bfe-b8e1-b9d33f62dd86",
+  "id": "46c1e488-2b2c-428f-8b8e-e9edbd276f78",
   "title": "Buy pc",
   "completed": false
 }
