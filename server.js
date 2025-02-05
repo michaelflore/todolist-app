@@ -10,13 +10,6 @@ server.use(function (req, res, next) {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
 });
-// GET empty list
-server.get('/api/todolist/empty', (req, res) => {
-    const response = [];
-    setTimeout(() => {
-        res.status(200).jsonp(response);
-    }, 3000);
-});
 // GET list
 // GET search query
 // GET filter query
@@ -41,7 +34,9 @@ server.get('/api/todolist', (req, res) => {
             return todo.title.toLowerCase().includes(query);
         });
     }
-    res.status(200).jsonp(todolist);
+    setTimeout(() => {
+        res.status(200).jsonp(todolist);
+    }, 2000);
 });
 // GET a todo
 server.get('/api/todolist/:todoId', (req, res) => {
@@ -54,7 +49,7 @@ server.get('/api/todolist/:todoId', (req, res) => {
     }
     setTimeout(() => {
         res.status(200).jsonp(todo);
-    }, 3000);
+    }, 2000);
 });
 // POST new todo
 server.post('/api/todolist', (req, res) => {
@@ -70,7 +65,7 @@ server.post('/api/todolist', (req, res) => {
     response.unshift(newTodo);
     setTimeout(() => {
         res.status(200).jsonp(response[0]);
-    }, 3000);
+    }, 2000);
 });
 // PATCH todo
 server.patch('/api/todolist/:todoId', (req, res) => {
@@ -91,7 +86,7 @@ server.patch('/api/todolist/:todoId', (req, res) => {
     }
     setTimeout(() => {
         res.status(200).jsonp(todo);
-    }, 3000);
+    }, 2000);
 });
 // Delete todo
 server.delete('/api/todolist/:todoId', (req, res) => {
@@ -105,7 +100,7 @@ server.delete('/api/todolist/:todoId', (req, res) => {
     const deletedItem = response.splice(index, 1)[0];
     setTimeout(() => {
         res.status(200).jsonp(deletedItem);
-    }, 3000);
+    }, 2000);
 });
 server.use(middlewares);
 const port = 5000;

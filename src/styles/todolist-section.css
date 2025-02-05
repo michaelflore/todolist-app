@@ -1,3 +1,8 @@
+.MuiSkeleton-root.skeleton-loader {
+    width: 100%;
+    height: calc(100vh - 96px);
+}
+
 .MuiSvgIcon-root.success-close-icon {
     width: 15px;
     height: 15px;
@@ -5,4 +10,21 @@
   
 .MuiAlert-root.todo-success-alert {
     margin-bottom: 1rem;
+}
+
+.no-todos-comp p {
+    font-weight: 600;
+    font-style: normal;
+    font-size: 18px;
+    text-align: center;
+}
+
+.no-todos-comp section {
+    margin-bottom: 3rem;
+}
+
+.no-todos-comp .actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

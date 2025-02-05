@@ -14,15 +14,6 @@ server.use( function( req, res, next ) {
     next();
 });
 
-// GET empty list
-server.get( '/api/todolist/empty', (req, res) => {
-    const response = [];
-
-    setTimeout(() => {
-        res.status(200).jsonp(response);
-    }, 3000);
-});
-
 // GET list
 // GET search query
 // GET filter query
@@ -55,7 +46,9 @@ server.get( '/api/todolist', (req, res) => {
         });
     }
 
-    res.status(200).jsonp(todolist);
+    setTimeout(() => {
+        res.status(200).jsonp(todolist);
+    }, 2000);
 });
 
 // GET a todo
@@ -73,7 +66,7 @@ server.get( '/api/todolist/:todoId', (req, res) => {
 
     setTimeout(() => {
         res.status(200).jsonp(todo);
-    }, 3000);
+    }, 2000);
 });
 
 // POST new todo
@@ -95,7 +88,7 @@ server.post( '/api/todolist', (req, res) => {
 
     setTimeout(() => {
         res.status(200).jsonp(response[0]);
-    }, 3000);
+    }, 2000);
 });
 
 // PATCH todo
@@ -124,7 +117,7 @@ server.patch( '/api/todolist/:todoId', (req, res) => {
 
     setTimeout(() => {
         res.status(200).jsonp(todo);
-    }, 3000);
+    }, 2000);
 });
 
 // Delete todo
@@ -144,7 +137,7 @@ server.delete( '/api/todolist/:todoId', (req, res) => {
 
     setTimeout(() => {
         res.status(200).jsonp(deletedItem);
-    }, 3000);
+    }, 2000);
 });
 
 server.use( middlewares );

@@ -22,11 +22,13 @@ function TodoListSection() {
 
   const location = useLocation();
 
+  const [hideContent, setHideContent] = useState(true);
   const [updatedTodoSuccessMessage, setUpdatedTodoSuccessMessage] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [todosError, setTodosError] = useState("");
 
+  const [fetchedTodos, setFetchedTodos] = useState<TodoI[]>([]);
   const [todos, setTodos] = useState<TodoI[]>([]);
 
   const [activeFilter, setActiveFilter] = useState<filterStatusType>("");
@@ -46,6 +48,7 @@ function TodoListSection() {
     display: flex;
     align-items: center;
     column-gap: 5px;
+    width: max-content;
 
     & .add-icon {
       width: 24px;
@@ -74,6 +77,8 @@ function TodoListSection() {
 
   useEffect(() => {
 
+    setHideContent(false);
+
     const abortController = new AbortController();
     const signal = abortController.signal;
 
@@ -93,6 +98,7 @@ function TodoListSection() {
   
           if(todos && Array.isArray(todos)) {
   
+            setFetchedTodos(todos);
             setTodos(todos);
   
             setTodosError("");
@@ -120,12 +126,26 @@ function TodoListSection() {
   }, []);
 
   const deleteTodoState = (todo: TodoI) => {
+    setFetchedTodos(state => {
+      return state.filter(value => value.id !== todo.id);
+    });
+    
     setTodos(state => {
       return state.filter(value => value.id !== todo.id);
     });
   };
 
   const updateTodoState = (updatedTodo: TodoI) => {
+
+    setFetchedTodos(state => {
+      return state.map((item) => {
+        if(item.id === updatedTodo.id) {
+          return updatedTodo;
+        } else {
+          return item;
+        }
+      })
+    });
 
     setTodos(state => {
       return state.map((item) => {
@@ -183,88 +203,114 @@ function TodoListSection() {
     setUpdatedTodoSuccessMessage("");
   }
 
-  return (
-      <div className="todo-list-section">
-        {
-          updatedTodoSuccessMessage && (
-            <Alert
-              severity="success"
-              onClose={handleAlertSuccessClose}
-              className="todo-success-alert"
-            >
-              {
-                updatedTodoSuccessMessage
-              }
-            </Alert>
-          )
-        }
-        <div className="search-and-filter">
-          <SearchForm
-            activeFilter={activeFilter}
-            setLoadingTodosState={setLoadingTodosState}
-            setTodosErrorState={setTodosErrorState}
-            setTodosState={setTodosState}
-            searchTerm={searchTerm}
-            setSearchTermState={setSearchTermState}
-          />
-          <FilterButtons
-            activeFilter={activeFilter}
-            setActiveFilterState={setActiveFilterState}
-            setLoadingTodosState={setLoadingTodosState}
-            setTodosErrorState={setTodosErrorState}
-            setTodosState={setTodosState}
-            searchTerm={searchTerm}
-          />
-          <Link
-            css={addLinkStyles}
-            to="/add"
-          >
-            <AddIcon className="add-icon" />Add Todo
-          </Link>
-        </div>
-        {
-          loading ? (
-            <Skeleton
-              variant="rectangular"
-              width="100%"
-            >
-              <TodoList
-                data={todos}
-                deleteTodoState={deleteTodoState}
-                updateTodoState={updateTodoState}
-                setLoadingTodosState={setLoadingTodosState}
-              />
-            </Skeleton>
-          ) : (
-            <>
-              {
-                todosError ? (
-                  <Alert severity="error" onClose={handleAlertClose}>
-                    <AlertTitle>Error</AlertTitle>
-                    {
-                      todosError
-                    }
-                  </Alert>
-                ) : (
-                  <>
-                    {
-                      todos.length > 0 && (
-                        <TodoList
-                          data={todos}
-                          deleteTodoState={deleteTodoState}
-                          updateTodoState={updateTodoState}
-                          setLoadingTodosState={setLoadingTodosState}
-                        />
-                      )
-                    }
-                  </>
-                )
-              }
-            </>
-          )
-        }
+  if(hideContent) {
+    return null;
+  }
 
-      </div>
+  return (
+    <div className="todo-list-section">
+      {
+        updatedTodoSuccessMessage && (
+          <Alert
+            severity="success"
+            onClose={handleAlertSuccessClose}
+            className="todo-success-alert"
+          >
+            {
+              updatedTodoSuccessMessage
+            }
+          </Alert>
+        )
+      }
+      {
+        fetchedTodos.length > 0 && (
+          <div className="search-and-filter">
+            <SearchForm
+              activeFilter={activeFilter}
+              setLoadingTodosState={setLoadingTodosState}
+              setTodosErrorState={setTodosErrorState}
+              setTodosState={setTodosState}
+              searchTerm={searchTerm}
+              setSearchTermState={setSearchTermState}
+            />
+            <FilterButtons
+              activeFilter={activeFilter}
+              setActiveFilterState={setActiveFilterState}
+              setLoadingTodosState={setLoadingTodosState}
+              setTodosErrorState={setTodosErrorState}
+              setTodosState={setTodosState}
+              searchTerm={searchTerm}
+            />
+            <Link
+              css={addLinkStyles}
+              to="/add"
+            >
+              <AddIcon className="add-icon" />Add Todo
+            </Link>
+          </div>
+        )
+      }
+      {
+        loading ? (
+          <Skeleton
+            variant="rectangular"
+            className="skeleton-loader"
+          />
+        ) : (
+          <>
+            {
+              todosError ? (
+                <Alert severity="error" onClose={handleAlertClose}>
+                  <AlertTitle>Error</AlertTitle>
+                  {
+                    todosError
+                  }
+                </Alert>
+              ) : (
+                <>
+                  {
+                    fetchedTodos.length === 0 ? (
+                      <div className="no-todos-comp">
+                        <section>
+                          <p>You do not have any todos yet.</p>
+                          <p>Add some to get started!</p>
+                        </section>
+                        <div className="actions">
+                          <Link
+                            css={addLinkStyles}
+                            to="/add"
+                          >
+                            <AddIcon className="add-icon" />Add Todo
+                          </Link>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        {
+                          todos.length > 0 ? (
+                            <TodoList
+                              data={todos}
+                              deleteTodoState={deleteTodoState}
+                              updateTodoState={updateTodoState}
+                              setLoadingTodosState={setLoadingTodosState}
+                            />
+                          ) : (
+                            <div className="no-results-comp">
+                              <h2>No Results</h2>
+                            </div>
+                          )
+                        }
+                      </>
+                    )
+                  }
+                </>
+              )
+            }
+          </>
+        )
+      }
+
+    </div>
   )
 }
 
