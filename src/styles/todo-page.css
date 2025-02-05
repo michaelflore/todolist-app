@@ -1,0 +1,48 @@
+.todo-page__header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.todo-page__header-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 2rem;
+    position: relative;
+}
+
+.todo-page__header-actions .back-button {
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    left: -60px;
+}
+
+.todo-page__header-title {
+    margin: 0;
+}
+
+.MuiSvgIcon-root.back-icon {
+    color: rgb(25, 118, 210);
+}
+
+.form-group-centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3rem;
+}
+
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.MuiFormControl-root.form-group {
+    display: block;
+    margin-bottom: 1rem;
+}

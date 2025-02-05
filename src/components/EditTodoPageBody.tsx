@@ -149,7 +149,7 @@ function EditTodoPageBody({ todoError, previousTodo, todo, setTodoErrorState, cl
     }
 
     return (
-        <div className="edit-todo-page__body">
+        <div className="todo-page__body">
             {
                 todoError ? (
                     <Alert severity="error" onClose={handleAlertClose}>
@@ -206,7 +206,6 @@ function EditTodoPageBody({ todoError, previousTodo, todo, setTodoErrorState, cl
                                                 color: "#000",
                                                 borderRadius: "5px",
                                                 height: "auto",
-                                                font: "revert",
                                                 "&::placeholder": {
                                                     color: "rgba(0, 0, 0, 0.5)",
                                                     opacity: "1"

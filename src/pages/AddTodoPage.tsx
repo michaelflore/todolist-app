@@ -140,8 +140,8 @@ function AddTodoPage() {
 
     return (
         <div className="add-todo-page">
-            <div className="add-todo-page__header">
-                <div className="add-todo-page__header-actions">
+            <div className="todo-page__header">
+                <div className="todo-page__header-actions">
                     <IconButton
                         aria-label="go back"
                         className="back-button"
@@ -149,10 +149,10 @@ function AddTodoPage() {
                     >
                         <ArrowBackIcon className="back-icon" />
                     </IconButton>
-                    <h1 className="add-todo-page__header-title">Add Todo</h1>
+                    <h1 className="todo-page__header-title">Add Todo</h1>
                 </div>
             </div>
-            <div className="add-todo-page__body">
+            <div className="todo-page__body">
                 <div className="form-container">
                     {
                         addError && (
@@ -200,7 +200,6 @@ function AddTodoPage() {
                                             color: "#000",
                                             borderRadius: "5px",
                                             height: "auto",
-                                            font: "revert",
                                             "&::placeholder": {
                                                 color: "rgba(0, 0, 0, 0.5)",
                                                 opacity: "1"

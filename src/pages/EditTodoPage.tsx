@@ -8,7 +8,7 @@ import IconButton from "@mui/material/IconButton";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-import EditTodoPageBody from "./EditTodoPageBody";
+import EditTodoPageBody from "../components/EditTodoPageBody";
 
 import { useParams, useNavigate } from "react-router";
 
@@ -86,8 +86,8 @@ function EditTodoPage() {
 
     return (
         <div className="edit-todo-page">
-            <div className="edit-todo-page__header">
-                <div className="edit-todo-page__header-actions">
+            <div className="todo-page__header">
+                <div className="todo-page__header-actions">
                     <IconButton
                         aria-label="go back"
                         className="back-button"
@@ -95,7 +95,7 @@ function EditTodoPage() {
                     >
                         <ArrowBackIcon className="back-icon" />
                     </IconButton>
-                    <h1 className="edit-todo-page__header-title">Edit Todo</h1>
+                    <h1 className="todo-page__header-title">Edit Todo</h1>
                 </div>
             </div>
             {

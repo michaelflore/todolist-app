@@ -21,14 +21,14 @@ import Alert from "@mui/material/Alert";
 
 import { Link } from "react-router";
 
-interface ItemProps {
+interface TodoListItemProps {
     todo: TodoI;
     deleteTodoState: (todo: TodoI) => void;
     updateTodoState: (updatedTodo: TodoI) => void;
     setLoadingTodosState: (loading: boolean) => void;
 }
 
-function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
+function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemProps) {
 
     const actionButtonStyles = css`
         background-color: rgba(0, 0, 0, 0.02);
@@ -171,6 +171,10 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
 
     }
 
+    const handleAlertClose = () => {
+        setError("");
+    }
+
     return (
         <div className="todolist__item">
             <div className="todolist__item-status">
@@ -196,7 +200,7 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
             <div className="todolist__item-details">
                 {
                     error && (
-                        <Alert icon={false} severity="error">{error}</Alert>
+                        <Alert icon={false} severity="error" onClose={handleAlertClose}>{error}</Alert>
                     )
                 }
                 <h2 css={todoTitleStyles}>{todo.title}</h2>
@@ -268,4 +272,4 @@ function Item({ todo, deleteTodoState, updateTodoState } : ItemProps) {
     )
 }
 
-export default Item;
+export default TodoListItem;

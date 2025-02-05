@@ -1,4 +1,5 @@
 import { useRef } from "react";
+
 import { fetchTodosAPI } from "../api/todo-api";
 import { filterStatusType, TodoI } from "../types/todo";
 
@@ -21,7 +22,7 @@ export function SearchForm({ activeFilter, setLoadingTodosState, setTodosErrorSt
   const inputStyles = css`
     background-color: rgba(0, 0, 0, 0.05);
     width: 18rem;
-    padding: 1rem;
+    padding: 15px 25px;
     border: 1px solid transparent;
     color: #000;
     border-radius: 30px;
