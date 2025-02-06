@@ -44,7 +44,7 @@ server.get('/api/todolist/:todoId', (req, res) => {
     const response = list.todoList;
     const todo = response.find(value => value.id === todoId);
     if (todo === undefined) {
-        res.status(400).jsonp({ message: "Item not found." });
+        res.status(404).jsonp({ error: true, message: "Item not found." });
         return;
     }
     setTimeout(() => {
@@ -74,7 +74,7 @@ server.patch('/api/todolist/:todoId', (req, res) => {
     const response = list.todoList;
     const index = response.findIndex(value => value.id === todoId);
     if (index === -1) {
-        res.status(400).jsonp({ message: "Item not found." });
+        res.status(404).jsonp({ error: true, message: "Item not found." });
         return;
     }
     const todo = response[index];
@@ -94,7 +94,7 @@ server.delete('/api/todolist/:todoId', (req, res) => {
     const response = list.todoList;
     const index = response.findIndex(value => value.id === todoId);
     if (index === -1) {
-        res.status(400).jsonp({ message: "Item not found." });
+        res.status(404).jsonp({ error: true, message: "Item not found." });
         return;
     }
     const deletedItem = response.splice(index, 1)[0];

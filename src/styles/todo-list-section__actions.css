@@ -1,8 +1,14 @@
-.search-and-filter {
+.todo-list-section__actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 3rem;
+}
+
+.todo-list-section__actions-search-filter {
+    display: flex;
+    align-items: center;
+    column-gap: 3rem;
 }
   
 .new-todo {

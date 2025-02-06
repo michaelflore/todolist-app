@@ -36,10 +36,9 @@
     margin-top: 3rem;
 }
 
-.form-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.form-section {
+    width: 500px;
+    margin: auto;
 }
 
 .MuiFormControl-root.form-group {

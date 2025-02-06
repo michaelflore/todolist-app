@@ -8,7 +8,7 @@ import { css } from "@emotion/react";
 interface SearchFormProps {
   activeFilter: filterStatusType;
   setLoadingTodosState: (loading: boolean) => void;
-  setTodosErrorState: (error: string) => void;
+  setTodosErrorState: (error: { type: string; message: string; }) => void;
   setTodosState: (data: TodoI[]) => void;
   searchTerm: string;
   setSearchTermState:(value: string) => void;
@@ -60,22 +60,34 @@ export function SearchForm({ activeFilter, setLoadingTodosState, setTodosErrorSt
             setLoadingTodosState(true);
   
             const todos = await fetchTodosAPI(activeFilter, e.target.value, abortController.signal);
+
+            //api route not found
+            if(todos === undefined) {
+              throw new Error();
+            }
+
+            // if(todos && todos.error) {
+            //   setTodosError(todos.message);
+            //   setLoading(false);
+            // }
     
             if(todos && Array.isArray(todos)) {
     
               setTodosState(todos);
 
-              setTodosErrorState("");
+              setTodosErrorState({ type: "", message: "" });
               setLoadingTodosState(false);
               
             }
     
-          } catch(e) {
+          } catch(err) {
     
-            console.error("fetchTodosSearch", e);
-    
-            setTodosErrorState("Something went wrong. Please try again.");
-            setLoadingTodosState(false);
+            console.error("fetchTodosSearch", err);
+            
+            if(err instanceof Error) {
+              setTodosErrorState({ type: "search", message: "Something went wrong. Please try again later."});
+              setLoadingTodosState(false);
+            }
     
           }
     

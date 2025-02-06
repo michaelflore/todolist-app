@@ -26,7 +26,7 @@ function TodoListSection() {
   const [updatedTodoSuccessMessage, setUpdatedTodoSuccessMessage] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [todosError, setTodosError] = useState("");
+  const [todosError, setTodosError] = useState({ type: "", message: ""});
 
   const [fetchedTodos, setFetchedTodos] = useState<TodoI[]>([]);
   const [todos, setTodos] = useState<TodoI[]>([]);
@@ -95,13 +95,24 @@ function TodoListSection() {
           setLoading(true);
   
           const todos = await fetchTodosAPI("", "", signal);
-  
+          console.log("mount", todos);
+
+          //api route not found
+          if(todos === undefined) {
+            throw new Error();
+          }
+
+          // if(todos && todos.error) {
+          //   setTodosError(todos.message);
+          //   setLoading(false);
+          // }
+
           if(todos && Array.isArray(todos)) {
   
             setFetchedTodos(todos);
             setTodos(todos);
   
-            setTodosError("");
+            setTodosError({ type: "", message: "" });
             setLoading(false);
    
           }
@@ -110,8 +121,10 @@ function TodoListSection() {
   
           console.error("fetchTodos", err);
   
-          setTodosError("Something went wrong. Please try again.");
-          setLoading(false);
+          if(err instanceof Error) {
+            setTodosError({ type: "fetch", message: "Something went wrong. Please try again later." });
+            setLoading(false);
+          }
   
         }
   
@@ -179,7 +192,7 @@ function TodoListSection() {
     setLoading(loading);
   }
 
-  const setTodosErrorState = (error: string) => {
+  const setTodosErrorState = (error: { type: string, message: string }) => {
     setTodosError(error);
   }
 
@@ -196,7 +209,7 @@ function TodoListSection() {
   }
 
   const handleAlertClose = () => {
-    setTodosErrorState("");
+    setTodosErrorState({ type: "", message: "" });
   }
 
   const handleAlertSuccessClose = () => {
@@ -224,23 +237,25 @@ function TodoListSection() {
       }
       {
         fetchedTodos.length > 0 && (
-          <div className="search-and-filter">
-            <SearchForm
-              activeFilter={activeFilter}
-              setLoadingTodosState={setLoadingTodosState}
-              setTodosErrorState={setTodosErrorState}
-              setTodosState={setTodosState}
-              searchTerm={searchTerm}
-              setSearchTermState={setSearchTermState}
-            />
-            <FilterButtons
-              activeFilter={activeFilter}
-              setActiveFilterState={setActiveFilterState}
-              setLoadingTodosState={setLoadingTodosState}
-              setTodosErrorState={setTodosErrorState}
-              setTodosState={setTodosState}
-              searchTerm={searchTerm}
-            />
+          <div className="todo-list-section__actions">
+            <div className="todo-list-section__actions-search-filter">
+              <FilterButtons
+                activeFilter={activeFilter}
+                setActiveFilterState={setActiveFilterState}
+                setLoadingTodosState={setLoadingTodosState}
+                setTodosErrorState={setTodosErrorState}
+                setTodosState={setTodosState}
+                searchTerm={searchTerm}
+              />
+              <SearchForm
+                activeFilter={activeFilter}
+                setLoadingTodosState={setLoadingTodosState}
+                setTodosErrorState={setTodosErrorState}
+                setTodosState={setTodosState}
+                searchTerm={searchTerm}
+                setSearchTermState={setSearchTermState}
+              />
+            </div>
             <Link
               css={addLinkStyles}
               to="/add"
@@ -259,11 +274,11 @@ function TodoListSection() {
         ) : (
           <>
             {
-              todosError ? (
-                <Alert severity="error" onClose={handleAlertClose}>
+              todosError && todosError.type ? (
+                <Alert severity="error" onClose={todosError.type === "fetch" ? undefined : handleAlertClose}>
                   <AlertTitle>Error</AlertTitle>
                   {
-                    todosError
+                    todosError.message
                   }
                 </Alert>
               ) : (

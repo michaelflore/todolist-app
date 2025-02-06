@@ -10,7 +10,7 @@ interface FilterButtonsProps {
     activeFilter: filterStatusType;
     setActiveFilterState: (filterTerm: filterStatusType) => void;
     setLoadingTodosState: (loading: boolean) => void;
-    setTodosErrorState: (error: string) => void;
+    setTodosErrorState: (error: { type: string; message: string; }) => void;
     setTodosState: (data: TodoI[]) => void;
     searchTerm: string;
 }
@@ -67,7 +67,6 @@ function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosStat
 
     const handleClickAll = (e : React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setActiveFilterState("");
 
         (
             async () => {
@@ -77,22 +76,36 @@ function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosStat
                     setLoadingTodosState(true);
         
                     const todos = await fetchTodosAPI("", searchTerm, null);
+
+                    //api route not found
+                    if(todos === undefined) {
+                        throw new Error();
+                    }
+        
+                    // if(todos && todos.error) {
+                    //   setTodosError(todos.message);
+                    //   setLoading(false);
+                    // }
             
                     if(todos && Array.isArray(todos)) {
             
                         setTodosState(todos);
 
-                        setTodosErrorState("");
+                        setTodosErrorState({ type: "", message: "" });
                         setLoadingTodosState(false);
+
+                        setActiveFilterState("");
                     
                     }
             
-                } catch(e) {
+                } catch(err) {
             
-                    console.error("fetchTodosAll", e);
+                    console.error("fetchTodosAll", err);
             
-                    setTodosErrorState("Something went wrong. Please try again.");
-                    setLoadingTodosState(false);
+                    if(err instanceof Error) {
+                        setTodosErrorState({ type: "filter", message: "Something went wrong. Please try again later." });
+                        setLoadingTodosState(false);
+                    }
             
                 }
         
@@ -102,7 +115,6 @@ function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosStat
 
     const handleClickCompleted = (e : React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setActiveFilterState("completed");
 
         (
             async () => {
@@ -112,22 +124,36 @@ function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosStat
                     setLoadingTodosState(true);
         
                     const todos = await fetchTodosAPI("completed", searchTerm, null);
+
+                    //api route not found
+                    if(todos === undefined) {
+                        throw new Error();
+                    }
+        
+                    // if(todos && todos.error) {
+                    //   setTodosError(todos.message);
+                    //   setLoading(false);
+                    // }
             
                     if(todos && Array.isArray(todos)) {
             
                         setTodosState(todos);
 
-                        setTodosErrorState("");
+                        setTodosErrorState({ type: "", message: "" });
                         setLoadingTodosState(false);
+
+                        setActiveFilterState("completed");
                     
                     }
             
-                } catch(e) {
+                } catch(err) {
+
+                    console.error("fetchTodosCompleted", err);
             
-                    console.error("fetchTodosAll", e);
-            
-                    setTodosErrorState("Something went wrong. Please try again.");
-                    setLoadingTodosState(false);
+                    if(err instanceof Error) {
+                        setTodosErrorState({ type: "filter", message: "Something went wrong. Please try again later." });
+                        setLoadingTodosState(false);
+                    }
             
                 }
         
@@ -137,7 +163,6 @@ function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosStat
 
     const handleClickPending = (e : React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setActiveFilterState("pending");
 
         (
             async () => {
@@ -147,22 +172,36 @@ function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosStat
                     setLoadingTodosState(true);
         
                     const todos = await fetchTodosAPI("pending", searchTerm, null);
+
+                    //api route not found
+                    if(todos === undefined) {
+                        throw new Error();
+                    }
+        
+                    // if(todos && todos.error) {
+                    //   setTodosError(todos.message);
+                    //   setLoading(false);
+                    // }
             
                     if(todos && Array.isArray(todos)) {
             
                         setTodosState(todos);
 
-                        setTodosErrorState("");
+                        setTodosErrorState({ type: "", message: "" });
                         setLoadingTodosState(false);
+
+                        setActiveFilterState("pending");
                     
                     }
             
-                } catch(e) {
+                } catch(err) {
             
-                    console.error("fetchTodosAll", e);
+                    console.error("fetchTodosPending", err);
             
-                    setTodosErrorState("Something went wrong. Please try again.");
-                    setLoadingTodosState(false);
+                    if(err instanceof Error) {
+                        setTodosErrorState({ type: "filter", message: "Something went wrong. Please try again later." });
+                        setLoadingTodosState(false);
+                    }
             
                 }
         

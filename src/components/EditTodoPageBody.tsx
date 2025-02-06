@@ -22,13 +22,12 @@ interface EditTodoPageBodyProps {
     todoError: string;
     previousTodo: TodoUpdatesI;
     todo: TodoUpdatesI;
-    setTodoErrorState: (value: string) => void;
     clearForm: () => void;
     setTodoTitleState: (value: string) => void;
     setTodoCompletedState: (value: boolean) => void;
 }
 
-function EditTodoPageBody({ todoError, previousTodo, todo, setTodoErrorState, clearForm, setTodoTitleState, setTodoCompletedState }: EditTodoPageBodyProps) {
+function EditTodoPageBody({ todoError, previousTodo, todo, clearForm, setTodoTitleState, setTodoCompletedState }: EditTodoPageBodyProps) {
 
     const params = useParams();
     const navigate = useNavigate();
@@ -36,16 +35,17 @@ function EditTodoPageBody({ todoError, previousTodo, todo, setTodoErrorState, cl
     const [updateLoading, setUpdateLoading] = useState(false);
     const [updateError, setUpdateError] = useState("");
 
+    const [formErrors, setFormErrors] = useState({ title: "" });
+
     const [formDisabled, setFormDisabled] = useState(false);
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const formStyles = css`
-        width: 300px;
         margin-bottom: 0.2rem;
 
         fieldset {
             border: 0;
-            padding: 1rem;
+            padding: 1rem 0;
         }
     `;
 
@@ -81,6 +81,10 @@ function EditTodoPageBody({ todoError, previousTodo, todo, setTodoErrorState, cl
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUpdateError("");
+        setFormErrors(state => ( {
+            ...state,
+            title: ""
+        } ));
         setTodoTitleState(e.target.value);
     };
 
@@ -94,8 +98,11 @@ function EditTodoPageBody({ todoError, previousTodo, todo, setTodoErrorState, cl
 
         setUpdateError("");
 
-        if(todo && todo.title && todo.title.length < 5) {
-            setUpdateError("Must be at least 5 characters.");
+        if(todo && todo.title !== undefined && todo.title.length < 5) {
+            setFormErrors(state => ( {
+                ...state,
+                title: "Must be at least 5 characters."
+            } ));
         } else {
             setUpdateLoading(true);
             setFormDisabled(true);
@@ -117,8 +124,19 @@ function EditTodoPageBody({ todoError, previousTodo, todo, setTodoErrorState, cl
                     try {
 
                         const updatedTodo = await updateTodoAPI((params.todoId as string), updates);
+
+                        if(updatedTodo === undefined) {
+                            throw new Error();
+                        }
+        
+                        if(updatedTodo && updatedTodo.error) {
+                            setUpdateError(updatedTodo.message);
+                            setUpdateLoading(false);
+                            setFormDisabled(false);
+                            setSubmitDisabled(false);
+                        }
                         
-                        if(updatedTodo) {
+                        if(updatedTodo && updatedTodo.id) {
                             clearForm();
                             setUpdateLoading(false);
                             setFormDisabled(false);
@@ -127,14 +145,15 @@ function EditTodoPageBody({ todoError, previousTodo, todo, setTodoErrorState, cl
                             navigate("/", { state: "Todo updated successfully." });
                         }
 
+                    } catch(err) {
+                        console.error("updateTodo", err);
 
-                    } catch(e) {
-                        console.error("updateTodo", e);
-
-                        setUpdateError("Something Went Wrong.");
-                        setUpdateLoading(false);
-                        setFormDisabled(false);
-                        setSubmitDisabled(false);
+                        if(err instanceof Error) {
+                            setUpdateError("Something went wrong. Please try again later.");
+                            setUpdateLoading(false);
+                            setFormDisabled(false);
+                            setSubmitDisabled(false);
+                        }
                     }
 
                 }
@@ -144,25 +163,25 @@ function EditTodoPageBody({ todoError, previousTodo, todo, setTodoErrorState, cl
 
     }
 
-    const handleAlertClose = () => {
-        setTodoErrorState("");
+    const handleCloseUpdateError = () => {
+        setUpdateError("");
     }
 
     return (
         <div className="todo-page__body">
             {
                 todoError ? (
-                    <Alert severity="error" onClose={handleAlertClose}>
+                    <Alert severity="error">
                         <AlertTitle>Error</AlertTitle>
                         {
                             todoError
                         }
                     </Alert>
                 ) : (
-                    <div className="form-container">
+                    <div className="form-section">
                         {
                             updateError && (
-                                <Alert icon={false} severity="error">{updateError}</Alert>
+                                <Alert icon={false} severity="error" onClose={handleCloseUpdateError}>{updateError}</Alert>
                             )
                         }
                         <form
@@ -172,12 +191,12 @@ function EditTodoPageBody({ todoError, previousTodo, todo, setTodoErrorState, cl
                             <fieldset disabled={formDisabled}>
                                 <FormControl className="form-group">
                                     <TextField
-                                        error={updateError ? true : false}
+                                        error={formErrors.title ? true : false}
                                         label="Title"
                                         placeholder="Enter title..."
                                         onChange={handleTitleChange}
                                         value={todo.title}
-                                        helperText={updateError}
+                                        helperText={formErrors.title}
                                         autoComplete="off"
                                         slotProps={
                                             {
@@ -197,6 +216,9 @@ function EditTodoPageBody({ todoError, previousTodo, todo, setTodoErrorState, cl
                                                 marginBottom: "6px"
                                             },
                                             "& .MuiInputLabel-root.Mui-focused": {
+                                                color: "#000",
+                                            },
+                                            "& .MuiInputLabel-root.Mui-error": {
                                                 color: "#000",
                                             },
                                             "& .MuiInputBase-input": {
@@ -221,6 +243,9 @@ function EditTodoPageBody({ todoError, previousTodo, todo, setTodoErrorState, cl
                                                 "& .MuiOutlinedInput-notchedOutline": {
                                                     border: "0",  // Remove the focus outline border
                                                 }
+                                            },
+                                            "& .MuiFormHelperText-root.Mui-error": {
+                                                marginLeft: "0"
                                             }
                                         }}
                                     />

@@ -81,7 +81,7 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
     const [deleteBtnDisabled, setDeleteButtonDisabled] = useState(false);
     const [checkboxDisabled, setCheckboxDisabled] = useState(false);
 
-    const [error, setError] = useState("");
+    const [itemError, setItemError] = useState("");
 
     const confirmDeleteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -98,21 +98,33 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
 
                     const deletedTodo = await deleteTodoAPI(todo.id);
 
-                    if(deletedTodo) {
+                    if(deletedTodo === undefined) {
+                        throw new Error();
+                    }
+
+                    if(deletedTodo && deletedTodo.error) {
+                        setItemError(deletedTodo.message);
+                        setDeleteLoading(false);
+                        setCheckboxDisabled(false);
+                    }
+
+                    if(deletedTodo && deletedTodo.id) {
                         deleteTodoState(deletedTodo);
 
-                        setError("");
+                        setItemError("");
                         setDeleteLoading(false);
                         setCheckboxDisabled(false);
                     }
 
 
-                } catch(e) {
-                    console.error("deleteTodo", e);
+                } catch(err) {
+                    console.error("deleteTodo", err);
 
-                    setError("Something went wrong. Please try again.");
-                    setDeleteLoading(false);
-                    setCheckboxDisabled(false);
+                    if(err instanceof Error) {
+                        setItemError("Something went wrong. Please try again later.");
+                        setDeleteLoading(false);
+                        setCheckboxDisabled(false);
+                    }
                 }
 
             }
@@ -143,26 +155,37 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
 
                     const updatedTodo = await updateTodoAPI(todo.id, { completed: e.target.checked });
 
-                    if(updatedTodo) {
+                    if(updatedTodo === undefined) {
+                        throw new Error();
+                    }
+
+                    if(updatedTodo && updatedTodo.error) {
+                        setItemError(updatedTodo.message);
+                        setEditLoading(false);
+                        setEditLinkDisabled(false);
+                        setDeleteButtonDisabled(false);
+                    }
+
+                    if(updatedTodo && updatedTodo.id) {
 
                         updateTodoState(updatedTodo);
 
-                        setError("");
+                        setItemError("");
                         setEditLoading(false);
                         setEditLinkDisabled(false);
                         setDeleteButtonDisabled(false);
                     }
 
 
+                } catch(err) {
+                    console.error("updateTodo", err);
 
-                } catch(e) {
-
-                    console.error("updateTodo", e);
-
-                    setError("Something went wrong. Please try again.")
-                    setEditLoading(false);
-                    setEditLinkDisabled(false);
-                    setDeleteButtonDisabled(false);
+                    if(err instanceof Error) {
+                        setItemError("Something went wrong. Please try again later.");
+                        setEditLoading(false);
+                        setEditLinkDisabled(false);
+                        setDeleteButtonDisabled(false);
+                    }
 
                 }
 
@@ -171,8 +194,8 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
 
     }
 
-    const handleAlertClose = () => {
-        setError("");
+    const handleCloseItemError = () => {
+        setItemError("");
     }
 
     return (
@@ -199,8 +222,8 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
             </div>
             <div className="todolist__item-details">
                 {
-                    error && (
-                        <Alert icon={false} severity="error" onClose={handleAlertClose}>{error}</Alert>
+                    itemError && (
+                        <Alert icon={false} severity="error" onClose={handleCloseItemError}>{itemError}</Alert>
                     )
                 }
                 <h2 css={todoTitleStyles}>{todo.title}</h2>

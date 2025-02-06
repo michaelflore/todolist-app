@@ -28,16 +28,17 @@ function AddTodoPage() {
 
     const [todo, setTodo] = useState<TodoAddI>({ title: "", completed: false });
 
+    const [formErrors, setFormErrors] = useState({ title: "" });
+
     const [formDisabled, setFormDisabled] = useState(false);
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const formStyles = css`
-        width: 300px;
         margin-bottom: 0.2rem;
 
         fieldset {
             border: 0;
-            padding: 1rem;
+            padding: 1rem 0;
         }
     `;
 
@@ -73,6 +74,10 @@ function AddTodoPage() {
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAddError("");
+        setFormErrors(state => ( {
+            ...state,
+            title: ""
+        } ));
         setTodo(todo => ({ ...todo, title: e.target.value }));
     };
 
@@ -86,8 +91,13 @@ function AddTodoPage() {
 
         setAddError("");
 
-        if(todo && todo.title && todo.title.length < 5) {
-            setAddError("Must be at least 5 characters.");
+        if(todo && todo.title.length < 5) {
+
+            setFormErrors(state => ( {
+                ...state,
+                title: "Must be at least 5 characters."
+            } ));
+
         } else {
             setAddLoading(true);
             setFormDisabled(true);
@@ -104,8 +114,19 @@ function AddTodoPage() {
                     try {
 
                         const addedTodo = await addTodoAPI(newTodo);
+
+                        if(addedTodo === undefined) {
+                            throw new Error();
+                        }
+
+                        // if(addedTodo && addedTodo.error) {
+                        //     setAddError(addedTodo.message);
+                        //     setAddLoading(false);
+                        //     setFormDisabled(false);
+                        //     setSubmitDisabled(false);
+                        // }
                         
-                        if(addedTodo) {
+                        if(addedTodo && addedTodo.id) {
                             clearForm();
                             setAddLoading(false);
                             setFormDisabled(false);
@@ -114,13 +135,15 @@ function AddTodoPage() {
                             navigate("/", { state: "Todo added successfully." });
                         }
 
-                    } catch(e) {
-                        console.error("addTodo", e);
+                    } catch(err) {
+                        console.error("addTodo", err);
 
-                        setAddError("Something Went Wrong.");
-                        setAddLoading(false);
-                        setFormDisabled(false);
-                        setSubmitDisabled(false);
+                        if(err instanceof Error) {
+                            setAddError("Something went wrong. Please try again later.");
+                            setAddLoading(false);
+                            setFormDisabled(false);
+                            setSubmitDisabled(false);
+                        }
                     }
 
                 }
@@ -128,6 +151,10 @@ function AddTodoPage() {
 
         }
 
+    }
+
+    const handleCloseAddError = () => {
+        setAddError("");
     }
 
     const clearForm = () => {
@@ -153,10 +180,10 @@ function AddTodoPage() {
                 </div>
             </div>
             <div className="todo-page__body">
-                <div className="form-container">
+                <div className="form-section">
                     {
                         addError && (
-                            <Alert icon={false} severity="error">{addError}</Alert>
+                            <Alert icon={false} severity="error" onClose={handleCloseAddError}>{addError}</Alert>
                         )
                     }
                     <form
@@ -166,12 +193,12 @@ function AddTodoPage() {
                         <fieldset disabled={formDisabled}>
                             <FormControl className="form-group">
                                 <TextField
-                                    error={addError ? true : false}
+                                    error={formErrors.title ? true : false}
                                     label="Title"
                                     placeholder="Enter title..."
                                     onChange={handleTitleChange}
                                     value={todo.title}
-                                    helperText={addError}
+                                    helperText={formErrors.title}
                                     autoComplete="off"
                                     slotProps={
                                         {
@@ -191,6 +218,9 @@ function AddTodoPage() {
                                             marginBottom: "6px"
                                         },
                                         "& .MuiInputLabel-root.Mui-focused": {
+                                            color: "#000",
+                                        },
+                                        "& .MuiInputLabel-root.Mui-error": {
                                             color: "#000",
                                         },
                                         "& .MuiInputBase-input": {
@@ -215,6 +245,9 @@ function AddTodoPage() {
                                             "& .MuiOutlinedInput-notchedOutline": {
                                                 border: "0",  // Remove the focus outline border
                                             }
+                                        },
+                                        "& .MuiFormHelperText-root.Mui-error": {
+                                            marginLeft: "0"
                                         }
                                     }}
                                 />

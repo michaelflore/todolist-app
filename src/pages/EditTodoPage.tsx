@@ -31,10 +31,6 @@ function EditTodoPage() {
         setTodo(todo => ({ ...todo, completed: value }));
     }
 
-    const setTodoErrorState = (value: string) => {
-        setTodoError(value);
-    }
-
     const clearForm = () => {
         setTodo({ title: "", completed: false });
     }
@@ -55,6 +51,15 @@ function EditTodoPage() {
                 setTodoLoading(true);
         
                 const todo = await fetchTodoAPI((params.todoId as string), signal);
+
+                if(todo === undefined) {
+                    throw new Error();
+                }
+
+                if(todo && todo.error) {
+                    setTodoError(todo.message);
+                    setTodoLoading(false);
+                }
     
                 if(todo && todo.id) {
         
@@ -69,9 +74,11 @@ function EditTodoPage() {
             } catch(err) {
         
                 console.error("fetchTodo", err);
-        
-                setTodoError("Something went wrong. Please try again.");
-                setTodoLoading(false);
+
+                if(err instanceof Error) {
+                    setTodoError("Something went wrong. Please try again later.");
+                    setTodoLoading(false);
+                }
         
             }
         
@@ -108,7 +115,6 @@ function EditTodoPage() {
                             todoError={todoError}
                             previousTodo={previousTodo}
                             todo={todo}
-                            setTodoErrorState={setTodoErrorState}
                             clearForm={clearForm}
                             setTodoTitleState={setTodoTitleState}
                             setTodoCompletedState={setTodoCompletedState}
@@ -119,7 +125,6 @@ function EditTodoPage() {
                         todoError={todoError}
                         previousTodo={previousTodo}
                         todo={todo}
-                        setTodoErrorState={setTodoErrorState}
                         clearForm={clearForm}
                         setTodoTitleState={setTodoTitleState}
                         setTodoCompletedState={setTodoCompletedState}

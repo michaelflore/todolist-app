@@ -118,20 +118,20 @@ export const addTodoAPI = async (newTodo: TodoAddI) => {
 export const updateTodoAPI = async (todoId: string, updates: TodoUpdatesI) => {
 
   try {
-      const url = "/api/todolist/" + todoId;
+    const url = "/api/todolist/" + todoId;
 
-      const response = await fetch(url, {
-          method: "PATCH",
-          headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(updates)
-      });
+    const response = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(updates)
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      return data;
+    return data;
 
   } catch(err) {
 
@@ -146,18 +146,18 @@ export const updateTodoAPI = async (todoId: string, updates: TodoUpdatesI) => {
 export const deleteTodoAPI = async (todoId: string) => {
 
   try {
-      const url = "/api/todolist/" + todoId;
+    const url = "/api/todolist/" + todoId;
 
-      const response = await fetch(url, {
-        method: "DELETE",
-        headers: {
-          "Accept": "application/json"
-        }
-      });
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Accept": "application/json"
+      }
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      return data;
+    return data;
 
   } catch(err) {
 
