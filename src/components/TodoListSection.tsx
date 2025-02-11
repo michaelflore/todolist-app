@@ -18,6 +18,9 @@ import AddIcon from "@mui/icons-material/Add";
 
 import { useLocation, Link } from "react-router";
 
+import NoResults from "./NoResults";
+import NoTodos from "./NoTodos";
+
 function TodoListSection() {
 
   const location = useLocation();
@@ -285,20 +288,7 @@ function TodoListSection() {
                 <>
                   {
                     fetchedTodos.length === 0 ? (
-                      <div className="no-todos-comp">
-                        <section>
-                          <p>You do not have any todos yet.</p>
-                          <p>Add some to get started!</p>
-                        </section>
-                        <div className="actions">
-                          <Link
-                            css={addLinkStyles}
-                            to="/add"
-                          >
-                            <AddIcon className="add-icon" />Add Todo
-                          </Link>
-                        </div>
-                      </div>
+                      <NoTodos />
                     ) : (
                       <>
                         {
@@ -310,9 +300,7 @@ function TodoListSection() {
                               setLoadingTodosState={setLoadingTodosState}
                             />
                           ) : (
-                            <div className="no-results-comp">
-                              <h2>No Results</h2>
-                            </div>
+                            <NoResults />
                           )
                         }
                       </>

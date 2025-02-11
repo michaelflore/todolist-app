@@ -97,3 +97,15 @@ change environment in jest.config.ts for a browser like environment, since the d
 ```
 testEnvironment: "jsdom",
 ```
+
+add the right config in the jest.config.ts for ts-jest to use
+```
+transform: {
+    "^.+.tsx?$": [
+      "ts-jest",
+      {
+        tsconfig: "tsconfig.app.json"
+      }
+    ],
+  }
+```
