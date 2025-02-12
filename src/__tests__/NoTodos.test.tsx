@@ -8,15 +8,15 @@ import AddTodoPage from "../pages/AddTodoPage";
 
 test("Contains messages.", async () => {
 
-    const screen = render(
+    const result = render(
         <MemoryRouter>
             <NoTodos />
         </MemoryRouter>
     );
 
-    // screen.debug();
+    // result.debug();
 
-    const paragraphs = screen.getAllByRole("paragraph");
+    const paragraphs = result.getAllByRole("paragraph");
 
     expect(paragraphs).toHaveLength(2);
     expect(paragraphs[0]).toHaveTextContent(/^You do not have any todos yet\.$/);
@@ -26,17 +26,17 @@ test("Contains messages.", async () => {
 
 test("Contains icon and link.", () => {
 
-    const screen = render(
+    const result = render(
         <MemoryRouter>
             <NoTodos />
         </MemoryRouter>
     );
 
-    // screen.debug();
+    // result.debug();
 
-    const addIcon = screen.getByTestId("AddIcon");
+    const addIcon = result.getByTestId("AddIcon");
 
-    const addLink = screen.getByRole("link", { name: /^Add Todo$/ });
+    const addLink = result.getByRole("link", { name: /^Add Todo$/ });
 
     expect(addIcon).toBeInTheDocument();
     expect(addLink).toHaveAttribute("href", "/add");
@@ -47,7 +47,7 @@ test("Changes path when clicking on link.", async () => {
 
     const user = userEvent.setup();
 
-    const screen = render(
+    const result = render(
         <BrowserRouter>
             <Routes>
                 <Route element={<AppLayout />}>
@@ -58,17 +58,17 @@ test("Changes path when clicking on link.", async () => {
         </BrowserRouter>
     );
 
-    // screen.debug();
+    // result.debug();
 
-    const addLink = screen.getByRole("link", { name: /^Add Todo$/ });
+    const addLink = result.getByRole("link", { name: /^Add Todo$/ });
 
     expect(addLink).toHaveAttribute("href", "/add");
 
     await user.click(addLink);
 
-    screen.debug();
+    result.debug();
 
-    const addTodoTitle = screen.getByRole("heading", { level: 1, name: /^Add Todo$/ }) 
+    const addTodoTitle = result.getByRole("heading", { level: 1, name: /^Add Todo$/ }) 
 
     expect(window.location.pathname).toBe("/add");
     expect(addTodoTitle).toBeInTheDocument();

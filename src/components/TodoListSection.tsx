@@ -74,9 +74,9 @@ function TodoListSection() {
   `;
 
   //will still get called on initial render, then after todos is updated
-  useEffect(() => {
-    console.log("todos changed")
-  }, [todos]);
+  // useEffect(() => {
+  //   console.log("todos changed")
+  // }, [todos]);
 
   useEffect(() => {
 
@@ -297,7 +297,6 @@ function TodoListSection() {
                               data={todos}
                               deleteTodoState={deleteTodoState}
                               updateTodoState={updateTodoState}
-                              setLoadingTodosState={setLoadingTodosState}
                             />
                           ) : (
                             <NoResults />

@@ -25,7 +25,6 @@ interface TodoListItemProps {
     todo: TodoI;
     deleteTodoState: (todo: TodoI) => void;
     updateTodoState: (updatedTodo: TodoI) => void;
-    setLoadingTodosState: (loading: boolean) => void;
 }
 
 function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemProps) {

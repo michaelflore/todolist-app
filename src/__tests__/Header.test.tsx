@@ -5,12 +5,12 @@ import Header from "../components/Header";
 
 test("Renders the images.", () => {
 
-    const screen = render(<Header />);
+    const result = render(<Header />);
 
-    // screen.debug();
+    // result.debug();
 
-    const viteImg = screen.getByAltText("Vite logo");
-    const reactImg = screen.getByAltText("React logo");
+    const viteImg = result.getByAltText("Vite logo");
+    const reactImg = result.getByAltText("React logo");
 
     expect(viteImg).toBeInTheDocument();
     expect(reactImg).toBeInTheDocument();
@@ -21,11 +21,11 @@ test("Clicking on links.", async () => {
 
     const user = userEvent.setup();
     
-    const screen = render(<Header />);
+    const result = render(<Header />);
 
-    // screen.debug()
+    // result.debug()
 
-    const links = screen.getAllByRole("link");
+    const links = result.getAllByRole("link");
 
     await user.click(links[0]);
     

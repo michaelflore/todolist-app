@@ -5,10 +5,9 @@ interface TodoListProps {
     data: TodoI[];
     deleteTodoState: (todo: TodoI) => void;
     updateTodoState: (updatedTodo: TodoI) => void;
-    setLoadingTodosState: (loading: boolean) => void;
 }
 
-function TodoList( { data, deleteTodoState, updateTodoState, setLoadingTodosState }: TodoListProps) {
+function TodoList( { data, deleteTodoState, updateTodoState }: TodoListProps) {
 
     return (
         <div className="todolist">
@@ -20,7 +19,6 @@ function TodoList( { data, deleteTodoState, updateTodoState, setLoadingTodosStat
                             todo={todo}
                             deleteTodoState={deleteTodoState}
                             updateTodoState={updateTodoState}
-                            setLoadingTodosState={setLoadingTodosState}
                         />
                     )
                 })
