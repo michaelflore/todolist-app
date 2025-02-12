@@ -60,3 +60,12 @@ npm run server
 ```
 npm run development
 ```
+
+## To run tests
+```
+npm run test
+```
+## To run individual tests
+```
+npm run test -- NoTodos.test.tsx
+```

@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import NoResults from "../components/NoResults";
 
-test("contains text No Results", () => {
+test("Contains text No Results.", () => {
     const screen = render(<NoResults />);
 
     // screen.debug();

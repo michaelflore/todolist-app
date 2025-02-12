@@ -1,3 +1,8 @@
+# Routing
+React Router v7
+
+[GitHub Link](https://github.com/remix-run/react-router)
+
 # Components
 Material UI
 
@@ -37,7 +42,7 @@ npm i -D jest
 
 by default jest wont support ESM out of the box, so we could use provided options in jest docs or in this case we can use typescript
 
-lets use typescript via ts-jest
+lets use typescript via ts-jest (a jest transformer)
 ```
 npm i -D ts-jest
 ```

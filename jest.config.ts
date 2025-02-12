@@ -16,6 +16,9 @@ export default {
       "lines": 0
     }
   },
+  moduleNameMapper: {
+    "^/vite.svg$": "<rootDir>/public/vite.svg",
+  },
   setupFilesAfterEnv: [
     "<rootDir>/setupTests.ts"
   ],
@@ -27,5 +30,6 @@ export default {
         tsconfig: "tsconfig.app.json"
       }
     ],
+    "^.+\\.svg$": "<rootDir>/svgTransformer.js"
   }
 };
