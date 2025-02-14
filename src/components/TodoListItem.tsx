@@ -15,7 +15,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 
-import { deleteTodoAPI, updateTodoAPI } from "../api/todo-api";
+import { updateTodoAPI, deleteTodoAPI } from "../api/todo-api";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 
@@ -143,53 +143,48 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
 
     const handleCheckChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
-        (
-            async () => {
+        setEditLoading(true);
+        setEditLinkDisabled(true);
+        setDeleteButtonDisabled(true);
 
-                try {
+        ( async () => {
+            
+            try {
 
-                    setEditLoading(true);
-                    setEditLinkDisabled(true);
-                    setDeleteButtonDisabled(true);
+                const updatedTodo = await updateTodoAPI(todo.id, { completed: e.target.checked });
+                
+                if(updatedTodo === undefined) {
+                    throw new Error();
+                }
 
-                    const updatedTodo = await updateTodoAPI(todo.id, { completed: e.target.checked });
+                if(updatedTodo && updatedTodo.error) {
+                    setItemError(updatedTodo.message);
+                    setEditLoading(false);
+                    setEditLinkDisabled(false);
+                    setDeleteButtonDisabled(false);
+                }
 
-                    if(updatedTodo === undefined) {
-                        throw new Error();
-                    }
+                if(updatedTodo && updatedTodo.id) {
+                    updateTodoState(updatedTodo);
+                    setItemError("");
+                    setEditLoading(false);
+                    setEditLinkDisabled(false);
+                    setDeleteButtonDisabled(false);
+                }
 
-                    if(updatedTodo && updatedTodo.error) {
-                        setItemError(updatedTodo.message);
-                        setEditLoading(false);
-                        setEditLinkDisabled(false);
-                        setDeleteButtonDisabled(false);
-                    }
+            } catch(err) {
+                console.error("updateTodo", err);
 
-                    if(updatedTodo && updatedTodo.id) {
-
-                        updateTodoState(updatedTodo);
-
-                        setItemError("");
-                        setEditLoading(false);
-                        setEditLinkDisabled(false);
-                        setDeleteButtonDisabled(false);
-                    }
-
-
-                } catch(err) {
-                    console.error("updateTodo", err);
-
-                    if(err instanceof Error) {
-                        setItemError("Something went wrong. Please try again later.");
-                        setEditLoading(false);
-                        setEditLinkDisabled(false);
-                        setDeleteButtonDisabled(false);
-                    }
-
+                if(err instanceof Error) {
+                    setItemError("Something went wrong. Please try again later.");
+                    setEditLoading(false);
+                    setEditLinkDisabled(false);
+                    setDeleteButtonDisabled(false);
                 }
 
             }
-        )();
+
+        })();
 
     }
 
@@ -238,7 +233,7 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
                         <>
                             <Link
                                 css={actionButtonStyles}
-                                to={editLinkDisabled ? "" : "/edit/" + todo.id}
+                                to={editLinkDisabled ? "#" : "/edit/" + todo.id}
                                 className={editLinkDisabled ? "edit-todo-link disabled" : "edit-todo-link"}
                             >
                                 <EditIcon className="edit-icon" />

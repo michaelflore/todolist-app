@@ -22,7 +22,7 @@ export default {
   setupFilesAfterEnv: [
     "<rootDir>/setupTests.ts"
   ],
-  testEnvironment: "jsdom",
+  testEnvironment: "jest-fixed-jsdom",
   transform: {
     "^.+.tsx?$": [
       "ts-jest",

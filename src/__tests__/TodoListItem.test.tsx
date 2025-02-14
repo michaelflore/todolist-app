@@ -1,10 +1,11 @@
 import { render } from "@testing-library/react";
-// import userEvent from "@testing-library/user-event";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 
 import TodoListItem from "../components/TodoListItem";
 
 describe("Test completed Todo.", () => {
+   
     test("Checkbox is displayed and checked.", async () => {
 
         const todoMock = {
@@ -31,6 +32,54 @@ describe("Test completed Todo.", () => {
         const checkboxInput = result.getByRole("checkbox", { checked: true });
     
         expect(checkboxInput).toBeChecked();
+    
+    });
+
+    test("Loader shows when checked.", async () => {
+        
+        const todoMock = {
+            "id": "2e70d95c-11b4-494b-ad69-026acc309a08",
+            "title": "Complete project report",
+            "completed": true
+        }
+    
+        const deleteTodoStateMock = jest.fn();
+        const updateTodoStateMock = jest.fn();
+    
+        const result = render(
+            <MemoryRouter>
+                <TodoListItem
+                    todo={todoMock}
+                    updateTodoState={updateTodoStateMock}
+                    deleteTodoState={deleteTodoStateMock}
+                />
+            </MemoryRouter>
+        );
+    
+        // result.debug();
+    
+        const checkboxInput = result.getByRole("checkbox", { checked: true });
+    
+        expect(checkboxInput).toBeChecked();
+
+        await userEvent.click(checkboxInput);
+
+        // result.debug();
+        // const circularProgress = result.findByRole("progressbar");
+        // expect(circularProgress).toBeInTheDocument();
+        // const editLink = result.findByRole("link");
+        // const deleteBtn = result.findByRole("button");
+
+        // expect(editLink).toHaveAttribute("href", "#");
+        // expect(deleteBtn).toBeDisabled();
+
+        expect(updateTodoStateMock).toHaveBeenCalledWith(
+            {
+                "id": "2e70d95c-11b4-494b-ad69-026acc309a08",
+                "title": "Complete project report",
+                "completed": false
+            }
+        );
     
     });
 
