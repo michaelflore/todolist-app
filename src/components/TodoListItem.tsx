@@ -87,13 +87,13 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
 
         setOpen(false);
 
+        setDeleteLoading(true);
+        setCheckboxDisabled(true);
+
         (
             async () => {
 
                 try {
-
-                    setDeleteLoading(true);
-                    setCheckboxDisabled(true);
 
                     const deletedTodo = await deleteTodoAPI(todo.id);
 
@@ -148,9 +148,8 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
         setDeleteButtonDisabled(true);
 
         ( async () => {
-            
             try {
-
+                
                 const updatedTodo = await updateTodoAPI(todo.id, { completed: e.target.checked });
                 
                 if(updatedTodo === undefined) {
@@ -173,7 +172,7 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
                 }
 
             } catch(err) {
-                console.error("updateTodo", err);
+                // console.error("updateTodo", err);
 
                 if(err instanceof Error) {
                     setItemError("Something went wrong. Please try again later.");
@@ -193,7 +192,7 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
     }
 
     return (
-        <div className="todolist__item">
+        <div className="todolist__item" role="listitem">
             <div className="todolist__item-status">
                 {
                     editLoading ? (
@@ -231,13 +230,29 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
                         />
                     ) : (
                         <>
-                            <Link
-                                css={actionButtonStyles}
-                                to={editLinkDisabled ? "#" : "/edit/" + todo.id}
-                                className={editLinkDisabled ? "edit-todo-link disabled" : "edit-todo-link"}
-                            >
-                                <EditIcon className="edit-icon" />
-                            </Link>
+                            {
+                                editLinkDisabled ? (
+                                    <span
+                                        css={actionButtonStyles}
+                                        className="edit-todo-link disabled"
+                                        role="presentation"
+                                    >
+                                        <EditIcon
+                                            className="edit-icon"
+                                        />
+                                    </span>
+                                ) : (
+                                    <Link
+                                        css={actionButtonStyles}
+                                        to={"/edit/" + todo.id}
+                                        className="edit-todo-link"
+                                    >
+                                        <EditIcon
+                                            className="edit-icon"
+                                        />
+                                    </Link>
+                                )
+                            }
                             <button
                                 css={actionButtonStyles}
                                 onClick={handleDeleteClick}

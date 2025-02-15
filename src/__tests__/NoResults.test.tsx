@@ -1,12 +1,10 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import NoResults from "../components/NoResults";
 
 test("Contains text No Results.", () => {
-    const result = render(<NoResults />);
+    render(<NoResults />);
 
-    // result.debug();
-
-    const heading = result.getByRole("heading", { level: 2, name: /^No Results$/ });
+    const heading = screen.getByRole("heading", { level: 2, name: /^No Results$/ });
 
     expect(heading).toHaveTextContent(/^No Results$/);
 });

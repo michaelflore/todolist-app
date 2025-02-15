@@ -37,4 +37,9 @@ Install msw
 npm i msw@latest -D
 ```
 2) Userevent
-wait for the entire onChange to execute
+
+when doing await user.click() it will wait until the change handler and all async functions (if any) are completed.
+added delay() to sw handlers since the response was happening immediately in tests and could not test for spinner.
+
+3) json-server and jest transform
+type modoule in package.json for json-server and svgTransformer.js

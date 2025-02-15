@@ -18,7 +18,6 @@ import AddIcon from "@mui/icons-material/Add";
 
 import { useLocation, Link } from "react-router";
 
-import NoResults from "./NoResults";
 import NoTodos from "./NoTodos";
 
 function TodoListSection() {
@@ -290,19 +289,11 @@ function TodoListSection() {
                     fetchedTodos.length === 0 ? (
                       <NoTodos />
                     ) : (
-                      <>
-                        {
-                          todos.length > 0 ? (
-                            <TodoList
-                              data={todos}
-                              deleteTodoState={deleteTodoState}
-                              updateTodoState={updateTodoState}
-                            />
-                          ) : (
-                            <NoResults />
-                          )
-                        }
-                      </>
+                      <TodoList
+                        data={todos}
+                        deleteTodoState={deleteTodoState}
+                        updateTodoState={updateTodoState}
+                      />
                     )
                   }
                 </>
@@ -311,7 +302,6 @@ function TodoListSection() {
           </>
         )
       }
-
     </div>
   )
 }

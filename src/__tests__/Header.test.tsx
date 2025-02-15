@@ -1,16 +1,14 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import Header from "../components/Header";
 
 test("Renders the images.", () => {
 
-    const result = render(<Header />);
+    render(<Header />);
 
-    // result.debug();
-
-    const viteImg = result.getByAltText("Vite logo");
-    const reactImg = result.getByAltText("React logo");
+    const viteImg = screen.getByAltText("Vite logo");
+    const reactImg = screen.getByAltText("React logo");
 
     expect(viteImg).toBeInTheDocument();
     expect(reactImg).toBeInTheDocument();
@@ -21,11 +19,9 @@ test("Clicking on links.", async () => {
 
     const user = userEvent.setup();
     
-    const result = render(<Header />);
+    render(<Header />);
 
-    // result.debug()
-
-    const links = result.getAllByRole("link");
+    const links = screen.getAllByRole("link");
 
     await user.click(links[0]);
     

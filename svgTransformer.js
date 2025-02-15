@@ -1,9 +1,9 @@
 import path from "path";
 
-export default  {
+export default {
     process(sourceText, sourcePath) {
         return {
-            code: `export default ${JSON.stringify(path.basename(sourcePath))}`
+            code: `module.exports = ${JSON.stringify(path.basename(sourcePath))}`
         }
     }
 }

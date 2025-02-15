@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "msw";
+import { http, HttpResponse, delay } from "msw";
 
 export const handlers = [
     http.patch("/api/todolist/:todoId", async () => {
@@ -9,11 +9,22 @@ export const handlers = [
         // const updates = await info.request.json();
 
         // console.log(updates);
+        await delay();
         
         return HttpResponse.json({
             "id": "2e70d95c-11b4-494b-ad69-026acc309a08",
             "title": "Complete project report",
             "completed": false
+        }, { status: 200 });
+    }),
+    http.delete("/api/todolist/:todoId", async () => {
+
+        await delay();
+
+        return HttpResponse.json({
+            "id": "2e70d95c-11b4-494b-ad69-026acc309a08",
+            "title": "Complete project report",
+            "completed": true
         }, { status: 200 });
     }),
     http.post("/api/todolist", async (info) => {

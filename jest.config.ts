@@ -30,6 +30,6 @@ export default {
         tsconfig: "tsconfig.app.json"
       }
     ],
-    "^.+\\.svg$": "<rootDir>/svgTransformer.js"
+    "^.+\\.svg$": "<rootDir>/svgTransformer.js",
   }
 };
