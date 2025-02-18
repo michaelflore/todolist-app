@@ -68,13 +68,13 @@ function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosStat
     const handleClickAll = (e : React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
+        setLoadingTodosState(true);
+
         (
             async () => {
 
                 try {
-        
-                    setLoadingTodosState(true);
-        
+
                     const todos = await fetchTodosAPI("", searchTerm, null);
 
                     //api route not found
@@ -100,7 +100,7 @@ function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosStat
             
                 } catch(err) {
             
-                    console.error("fetchTodosAll", err);
+                    // console.error("fetchTodosAll", err);
             
                     if(err instanceof Error) {
                         setTodosErrorState({ type: "filter", message: "Something went wrong. Please try again later." });
@@ -116,12 +116,12 @@ function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosStat
     const handleClickCompleted = (e : React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
+        setLoadingTodosState(true);
+
         (
             async () => {
 
                 try {
-        
-                    setLoadingTodosState(true);
         
                     const todos = await fetchTodosAPI("completed", searchTerm, null);
 
@@ -148,7 +148,7 @@ function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosStat
             
                 } catch(err) {
 
-                    console.error("fetchTodosCompleted", err);
+                    // console.error("fetchTodosCompleted", err);
             
                     if(err instanceof Error) {
                         setTodosErrorState({ type: "filter", message: "Something went wrong. Please try again later." });
@@ -196,7 +196,7 @@ function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosStat
             
                 } catch(err) {
             
-                    console.error("fetchTodosPending", err);
+                    // console.error("fetchTodosPending", err);
             
                     if(err instanceof Error) {
                         setTodosErrorState({ type: "filter", message: "Something went wrong. Please try again later." });

@@ -27,6 +27,11 @@ interface EditTodoPageBodyProps {
     setTodoCompletedState: (value: boolean) => void;
 }
 
+export interface TodoUpdatesBody {
+    title?: string;
+    completed?: boolean;
+}
+
 function EditTodoPageBody({ todoError, previousTodo, todo, clearForm, setTodoTitleState, setTodoCompletedState }: EditTodoPageBodyProps) {
 
     const params = useParams();
@@ -98,17 +103,20 @@ function EditTodoPageBody({ todoError, previousTodo, todo, clearForm, setTodoTit
 
         setUpdateError("");
 
-        if(todo && todo.title !== undefined && todo.title.length < 5) {
+        //only for if we edit the title
+        if(todo && todo.title !== previousTodo.title && todo.title.length < 5) {
+
             setFormErrors(state => ( {
                 ...state,
                 title: "Must be at least 5 characters."
             } ));
+            
         } else {
             setUpdateLoading(true);
             setFormDisabled(true);
             setSubmitDisabled(true);
             
-            const updates: TodoUpdatesI = {};
+            const updates: TodoUpdatesBody = {};
 
             if(todo.title !== previousTodo.title) {
                 updates.title = todo.title;
@@ -198,13 +206,11 @@ function EditTodoPageBody({ todoError, previousTodo, todo, clearForm, setTodoTit
                                         value={todo.title}
                                         helperText={formErrors.title}
                                         autoComplete="off"
-                                        slotProps={
-                                            {
-                                                inputLabel: {
-                                                    shrink: true
-                                                }
+                                        slotProps={{
+                                            inputLabel: {
+                                                shrink: true
                                             }
-                                        }
+                                        }}
                                         sx={{
                                             "&.MuiTextField-root": {
                                                 width: "100%"

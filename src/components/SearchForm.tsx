@@ -16,8 +16,8 @@ interface SearchFormProps {
 
 export function SearchForm({ activeFilter, setLoadingTodosState, setTodosErrorState, setTodosState, searchTerm, setSearchTermState }: SearchFormProps) {
 
-  const searchDebouncer = useRef<number | null>();
-  const abortControllerSearch = useRef<AbortController | null>();
+  const searchDebouncer = useRef<number | undefined>();
+  const abortControllerSearch = useRef<AbortController | undefined>();
 
   const inputStyles = css`
     background-color: rgba(0, 0, 0, 0.05);
@@ -39,11 +39,11 @@ export function SearchForm({ activeFilter, setLoadingTodosState, setTodosErrorSt
   const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTermState(e.target.value);
 
-    if(searchDebouncer.current) {
+    if(searchDebouncer.current !== undefined) {
       clearTimeout(searchDebouncer.current);
     }
 
-    if(abortControllerSearch.current) {
+    if(abortControllerSearch.current !== undefined) {
       abortControllerSearch.current.abort("Canceled");
     }
 
@@ -52,13 +52,13 @@ export function SearchForm({ activeFilter, setLoadingTodosState, setTodosErrorSt
       const abortController = new AbortController();
       abortControllerSearch.current = abortController;
       
+      setLoadingTodosState(true);
+
       (
         async () => {
 
           try {
-  
-            setLoadingTodosState(true);
-  
+
             const todos = await fetchTodosAPI(activeFilter, e.target.value, abortController.signal);
 
             //api route not found
@@ -72,7 +72,7 @@ export function SearchForm({ activeFilter, setLoadingTodosState, setTodosErrorSt
             // }
     
             if(todos && Array.isArray(todos)) {
-    
+  
               setTodosState(todos);
 
               setTodosErrorState({ type: "", message: "" });
@@ -82,8 +82,8 @@ export function SearchForm({ activeFilter, setLoadingTodosState, setTodosErrorSt
     
           } catch(err) {
     
-            console.error("fetchTodosSearch", err);
-            
+            // console.error("fetchTodosSearch", err);
+    
             if(err instanceof Error) {
               setTodosErrorState({ type: "search", message: "Something went wrong. Please try again later."});
               setLoadingTodosState(false);
@@ -101,9 +101,10 @@ export function SearchForm({ activeFilter, setLoadingTodosState, setTodosErrorSt
     <input
       css={inputStyles}
       type="text"
-      placeholder="Search todo..."
+      placeholder="Search todos..."
       value={searchTerm}
       onChange={handleSearchTermChange}
+      aria-label="search todos"
     />
   )
 }

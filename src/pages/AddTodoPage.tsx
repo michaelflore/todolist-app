@@ -78,6 +78,7 @@ function AddTodoPage() {
             ...state,
             title: ""
         } ));
+
         setTodo(todo => ({ ...todo, title: e.target.value }));
     };
 
@@ -136,7 +137,7 @@ function AddTodoPage() {
                         }
 
                     } catch(err) {
-                        console.error("addTodo", err);
+                        // console.error("addTodo", err);
 
                         if(err instanceof Error) {
                             setAddError("Something went wrong. Please try again later.");
@@ -200,13 +201,11 @@ function AddTodoPage() {
                                     value={todo.title}
                                     helperText={formErrors.title}
                                     autoComplete="off"
-                                    slotProps={
-                                        {
-                                            inputLabel: {
-                                                shrink: true
-                                            }
+                                    slotProps={{
+                                        inputLabel: {
+                                            shrink: true
                                         }
-                                    }
+                                    }}
                                     sx={{
                                         "&.MuiTextField-root": {
                                             width: "100%"
