@@ -17,7 +17,7 @@ function TodoList( { data, deleteTodoState, updateTodoState }: TodoListProps) {
         <>
             {
                 data.length > 0 ? (
-                    <div className="todolist">
+                    <div className="todolist" role="list">
                         {
                             data.map((todo) => {
                                 return (

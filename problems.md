@@ -43,3 +43,7 @@ added delay() to sw handlers since the response was happening immediately in tes
 
 3) json-server and jest transform
 type modoule in package.json for json-server and svgTransformer.js
+
+4) testing
+when testing keep in mind the server in setupTests.ts modifications to it ended up affecting various tests so we created
+a mockdb file and reset the data on each test

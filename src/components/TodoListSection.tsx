@@ -28,9 +28,12 @@ function TodoListSection() {
   const [updatedTodoSuccessMessage, setUpdatedTodoSuccessMessage] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [todosError, setTodosError] = useState({ type: "", message: ""});
+  const [todosError, setTodosError] = useState({ type: "", message: "" });
 
+  //todos already in database
   const [fetchedTodos, setFetchedTodos] = useState<TodoI[]>([]);
+
+  //rendered todos
   const [todos, setTodos] = useState<TodoI[]>([]);
 
   const [activeFilter, setActiveFilter] = useState<filterStatusType>("");
@@ -86,18 +89,18 @@ function TodoListSection() {
 
     if(location.state) {
       setUpdatedTodoSuccessMessage(location.state);
-      window.history.replaceState({}, "");
+      window.history.replaceState(null, "");
     }
+
+    setLoading(true);
 
     (
       async () => {
       
         try {
   
-          setLoading(true);
-  
           const todos = await fetchTodosAPI("", "", signal);
-          console.log("mount", todos);
+          // console.log("mount", todos);
 
           //api route not found
           if(todos === undefined) {
@@ -121,7 +124,7 @@ function TodoListSection() {
   
         } catch(err) {
   
-          console.error("fetchTodos", err);
+          // console.error("fetchTodos", err);
   
           if(err instanceof Error) {
             setTodosError({ type: "fetch", message: "Something went wrong. Please try again later." });
@@ -272,6 +275,7 @@ function TodoListSection() {
           <Skeleton
             variant="rectangular"
             className="skeleton-loader"
+            aria-label="Loading todos"
           />
         ) : (
           <>

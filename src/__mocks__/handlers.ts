@@ -1,5 +1,5 @@
 import { http, HttpResponse, delay } from "msw";
-import list from "../../mockdata.json";
+import mockedDatabase from "../__mocks__/mock-db";
 
 interface AddTodoRequestBody {
     title: string;
@@ -27,85 +27,41 @@ export const handlers = [
         const searchValue = params.get("search");
         const filterValue = params.get("filter");
 
+        let todolist = mockedDatabase.db;
+
         await delay();
 
         if(filterValue) {
             if(filterValue === "completed") {
-                return HttpResponse.json(
-                    [
-                        {
-                          "id": "2e70d95c-11b4-494b-ad69-026acc309a08",
-                          "title": "Complete project report",
-                          "completed": true
-                        },
-                        {
-                          "id": "63980a8e-5538-4e70-a9bd-c16e6a947129",
-                          "title": "Buy groceries",
-                          "completed": true
-                        }
-                    ]
-                );
+                todolist = todolist.filter((todo) => {
+                    return todo.completed === true;
+                });
             }
 
             if(filterValue === "pending") {
-                return HttpResponse.json(
-                    [
-                        {
-                            "id": "6418eab2-161d-4c78-8d68-0c9176ce642c",
-                            "title": "Respond to client emails",
-                            "completed": false
-                        },
-                        {
-                            "id": "3bb4944c-d5d0-4f93-a8c5-93b513bd90cc",
-                            "title": "Schedule doctor's appointment",
-                            "completed": false
-                        }
-                    ]
-                );
+                todolist = todolist.filter((todo) => {
+                    return todo.completed === false;
+                });
             }
         }
 
         if(searchValue) {
-            return HttpResponse.json(
-                [
-                    {
-                      "id": "6418eab2-161d-4c78-8d68-0c9176ce642c",
-                      "title": "Respond to client emails",
-                      "completed": false
-                    }
-                ]
-            );
+            const query = searchValue.toLowerCase();
+
+            todolist = todolist.filter((todo) => {
+                return todo.title.toLowerCase().includes(query);
+            });
         }
 
         return HttpResponse.json(
-            [
-                {
-                  "id": "2e70d95c-11b4-494b-ad69-026acc309a08",
-                  "title": "Complete project report",
-                  "completed": true
-                },
-                {
-                  "id": "63980a8e-5538-4e70-a9bd-c16e6a947129",
-                  "title": "Buy groceries",
-                  "completed": true
-                },
-                {
-                  "id": "6418eab2-161d-4c78-8d68-0c9176ce642c",
-                  "title": "Respond to client emails",
-                  "completed": false
-                },
-                {
-                  "id": "3bb4944c-d5d0-4f93-a8c5-93b513bd90cc",
-                  "title": "Schedule doctor's appointment",
-                  "completed": false
-                }
-            ]
+            todolist,
+            { status: 200 }
         )
     }),
     http.get<GetTodoParams>("/api/todolist/:todoId", async (info) => {
         const todoId = info.params.todoId;
 
-        const response = list.todoList;
+        const response = mockedDatabase.db;
 
         const todo = response.find(value => value.id === todoId);
 
@@ -149,7 +105,7 @@ export const handlers = [
 
         await delay();
 
-        const response = list.todoList;
+        const response = mockedDatabase.db;
 
         const index = response.findIndex(value => value.id === todoId);
 
@@ -172,7 +128,7 @@ export const handlers = [
         if(updatedTodo.completed !== undefined) {
             todo.completed = updatedTodo.completed;
         }
-        
+
         return HttpResponse.json(todo, { status: 200 });
     }),
     http.delete("/api/todolist/:todoId", async () => {

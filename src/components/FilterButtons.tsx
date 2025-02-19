@@ -217,18 +217,21 @@ function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosStat
             <button
                 css={activeFilter === "" ? activeStyles : buttonStyles}
                 onClick={handleClickAll}
+                aria-current={activeFilter === "" ? "true" : undefined}
             >
                 All
             </button>
             <button
                 css={activeFilter === "completed" ? activeStyles : buttonStyles}
                 onClick={handleClickCompleted}
+                aria-current={activeFilter === "completed" ? "true" : undefined}
             >
                 Completed
             </button>
             <button
                 css={activeFilter === "pending" ? activeStyles : buttonStyles}
                 onClick={handleClickPending}
+                aria-current={activeFilter === "completed" ? "true" : undefined}
             >
                 Pending
             </button>

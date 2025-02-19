@@ -108,11 +108,12 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
                     }
 
                     if(deletedTodo && deletedTodo.id) {
-                        deleteTodoState(deletedTodo);
-
+                        
                         setItemError("");
                         setDeleteLoading(false);
                         setCheckboxDisabled(false);
+
+                        deleteTodoState(deletedTodo);
                     }
 
 
@@ -164,11 +165,12 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
                 }
 
                 if(updatedTodo && updatedTodo.id) {
-                    updateTodoState(updatedTodo);
                     setItemError("");
                     setEditLoading(false);
                     setEditLinkDisabled(false);
                     setDeleteButtonDisabled(false);
+
+                    updateTodoState(updatedTodo);
                 }
 
             } catch(err) {
@@ -246,6 +248,7 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
                                         css={actionButtonStyles}
                                         to={"/edit/" + todo.id}
                                         className="edit-todo-link"
+                                        aria-label="Edit todo"
                                     >
                                         <EditIcon
                                             className="edit-icon"
@@ -257,6 +260,7 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
                                 css={actionButtonStyles}
                                 onClick={handleDeleteClick}
                                 disabled={deleteBtnDisabled}
+                                aria-label="Delete todo"
                             >
                                 <DeleteIcon className="trash-icon" />
                             </button>
