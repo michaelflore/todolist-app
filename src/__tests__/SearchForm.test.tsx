@@ -36,21 +36,24 @@ test("Search term changes.", async () => {
         expect(setLoadingTodosStateMock).toHaveBeenCalledWith(true);
     });
 
-    expect(setTodosStateMock).toHaveBeenCalledWith(
-        [
-            {
-                "id": "6418eab2-161d-4c78-8d68-0c9176ce642c",
-                "title": "Respond to client emails",
-                "completed": false
-            }
-        ]
-    );
-
-    expect(setTodosErrorStateMock).toHaveBeenCalledWith(
-        { type: "", message: "" }
-    );
-
-    expect(setLoadingTodosStateMock).toHaveBeenCalledWith(false);
+    //success
+    await waitFor(() => {
+        expect(setTodosStateMock).toHaveBeenCalledWith(
+            [
+                {
+                    "id": "6418eab2-161d-4c78-8d68-0c9176ce642c",
+                    "title": "Respond to client emails",
+                    "completed": false
+                }
+            ]
+        );
+    
+        expect(setTodosErrorStateMock).toHaveBeenCalledWith(
+            { type: "", message: "" }
+        );
+    
+        expect(setLoadingTodosStateMock).toHaveBeenCalledWith(false);
+    });
 
 });
 

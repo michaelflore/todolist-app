@@ -1,5 +1,5 @@
 import { TodoUpdatesI } from "../types/todo";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { fetchTodoAPI } from "../api/todo-api";
 
@@ -23,6 +23,8 @@ function EditTodoPage() {
     const [previousTodo, setPreviousTodo] = useState<TodoUpdatesI>({ title: "", completed: false });
     const [todo, setTodo] = useState<TodoUpdatesI>({ title: "", completed: false });
 
+    const abortControllerRef = useRef<AbortController | undefined>();
+
     const setTodoTitleState = (value: string) => {
         setTodo(todo => ({ ...todo, title: value }));
     }
@@ -42,51 +44,54 @@ function EditTodoPage() {
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-    
+        abortControllerRef.current = abortController;
+
+        setTodoLoading(true);
+
         (
             async () => {
             
-            try {
-        
-                setTodoLoading(true);
-        
-                const todo = await fetchTodoAPI((params.todoId as string), signal);
+                try {
 
-                if(todo === undefined) {
-                    throw new Error();
-                }
+                    const todo = await fetchTodoAPI((params.todoId as string), signal);
 
-                if(todo && todo.error) {
-                    setTodoError(todo.message);
-                    setTodoLoading(false);
-                }
-    
-                if(todo && todo.id) {
+                    if(todo === undefined) {
+                        throw new Error();
+                    }
+
+                    if(todo && todo.error) {
+                        setTodoError(todo.message);
+                        setTodoLoading(false);
+                    }
         
-                    setTodo({ title: todo.title, completed: todo.completed });
-                    setPreviousTodo({ title: todo.title, completed: todo.completed });
+                    if(todo && todo.id) {
             
-                    setTodoError("");
-                    setTodoLoading(false);
-        
-                }
-        
-            } catch(err) {
-        
-                console.error("fetchTodo", err);
+                        setTodo({ title: todo.title, completed: todo.completed });
+                        setPreviousTodo({ title: todo.title, completed: todo.completed });
+                
+                        setTodoError("");
+                        setTodoLoading(false);
 
-                if(err instanceof Error) {
-                    setTodoError("Something went wrong. Please try again later.");
-                    setTodoLoading(false);
+                    }
+            
+                } catch(err) {
+            
+                    console.error("fetchTodo", err);
+
+                    if(err instanceof Error) {
+                        setTodoError("Something went wrong. Please try again later.");
+                        setTodoLoading(false);
+                    }
+            
                 }
-        
-            }
         
             }
         )();
     
         return () => {
-            abortController.abort("Mounted");
+            if(abortControllerRef.current) {
+                abortControllerRef.current.abort("Mounted");
+            }
         }
         
     }, [params.todoId]);
@@ -110,6 +115,7 @@ function EditTodoPage() {
                     <Skeleton
                         variant="rectangular"
                         width="100%"
+                        aria-label="Loading todo information"
                     >
                         <EditTodoPageBody
                             todoError={todoError}

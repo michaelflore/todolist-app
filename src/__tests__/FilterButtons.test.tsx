@@ -198,11 +198,13 @@ test("Handle click completed filter. Filter completed api url is down or not fou
 
     expect(setLoadingTodosStateMock).toHaveBeenCalledWith(true);
 
-    expect(setTodosErrorStateMock).toHaveBeenCalledWith(
-        { type: "filter", message: "Something went wrong. Please try again later." }
-    );
-
-    expect(setLoadingTodosStateMock).toHaveBeenCalledWith(false);
+    await waitFor(() => {
+        expect(setTodosErrorStateMock).toHaveBeenCalledWith(
+            { type: "filter", message: "Something went wrong. Please try again later." }
+        );
+    
+        expect(setLoadingTodosStateMock).toHaveBeenCalledWith(false);
+    });
 
 });
 
@@ -292,10 +294,12 @@ test("Handle click pending filter. Filter pending api url is down or not found."
 
     expect(setLoadingTodosStateMock).toHaveBeenCalledWith(true);
 
-    expect(setTodosErrorStateMock).toHaveBeenCalledWith(
-        { type: "filter", message: "Something went wrong. Please try again later." }
-    );
-
-    expect(setLoadingTodosStateMock).toHaveBeenCalledWith(false);
+    await waitFor(() => {
+        expect(setTodosErrorStateMock).toHaveBeenCalledWith(
+            { type: "filter", message: "Something went wrong. Please try again later." }
+        );
+    
+        expect(setLoadingTodosStateMock).toHaveBeenCalledWith(false);
+    });
 
 });

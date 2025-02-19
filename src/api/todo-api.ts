@@ -24,7 +24,7 @@ export const fetchTodoAPI = async (todoId: string, signal: AbortSignal) => {
     return data;
 
   } catch (err) {
-
+console.log(err);
     if(err instanceof Error) {
       console.error("fetchTodoAPI", err);
     }

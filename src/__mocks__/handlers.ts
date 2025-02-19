@@ -1,8 +1,22 @@
 import { http, HttpResponse, delay } from "msw";
+import list from "../../mockdata.json";
 
 interface AddTodoRequestBody {
     title: string;
     completed: boolean;
+}
+
+interface GetTodoParams {
+    todoId: string;
+}
+
+interface UpdateTodoParams {
+    todoId: string;
+}
+
+interface UpdateTodoRequestBody {
+    title?: string;
+    completed?: boolean;
 }
 
 export const handlers = [
@@ -12,6 +26,8 @@ export const handlers = [
 
         const searchValue = params.get("search");
         const filterValue = params.get("filter");
+
+        await delay();
 
         if(filterValue) {
             if(filterValue === "completed") {
@@ -61,8 +77,6 @@ export const handlers = [
             );
         }
 
-        await delay();
-
         return HttpResponse.json(
             [
                 {
@@ -88,6 +102,29 @@ export const handlers = [
             ]
         )
     }),
+    http.get<GetTodoParams>("/api/todolist/:todoId", async (info) => {
+        const todoId = info.params.todoId;
+
+        const response = list.todoList;
+
+        const todo = response.find(value => value.id === todoId);
+
+        await delay();
+
+        if(todo === undefined) {
+
+            return HttpResponse.json(
+                {
+                    error: true,
+                    message: "Item not found."
+                },
+                { status: 404 }
+            )
+        }
+
+        return HttpResponse.json(todo, { status: 200 });
+
+    }),
     http.post<object, AddTodoRequestBody>("/api/todolist", async (info) => {
         const todoBody = await info.request.json();
 
@@ -104,21 +141,39 @@ export const handlers = [
 
         return HttpResponse.json(newTodo, { status: 200 });
     }),
-    http.patch("/api/todolist/:todoId", async () => {
-        // const url = new URL(info.request.url);
-        // console.log(info.params.todoId)
-        // console.log(url)
+    http.patch<UpdateTodoParams, UpdateTodoRequestBody>("/api/todolist/:todoId", async (info) => {
 
-        // const updates = await info.request.json();
+        const todoId = info.params.todoId;
 
-        // console.log(updates);
+        const updatedTodo = await info.request.json();
+
         await delay();
+
+        const response = list.todoList;
+
+        const index = response.findIndex(value => value.id === todoId);
+
+        if(index === -1) {
+            return HttpResponse.json(
+                {
+                    error: true,
+                    message: "Item not found."
+                },
+                { status: 404 }
+            )
+        }
         
-        return HttpResponse.json({
-            "id": "2e70d95c-11b4-494b-ad69-026acc309a08",
-            "title": "Complete project report",
-            "completed": false
-        }, { status: 200 });
+        const todo = response[index];
+
+        if(updatedTodo.title !== undefined) {
+            todo.title = updatedTodo.title;
+        }
+
+        if(updatedTodo.completed !== undefined) {
+            todo.completed = updatedTodo.completed;
+        }
+        
+        return HttpResponse.json(todo, { status: 200 });
     }),
     http.delete("/api/todolist/:todoId", async () => {
 
