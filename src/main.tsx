@@ -16,9 +16,24 @@ import { Global, css } from "@emotion/react";
 const theme = createTheme({
   typography: {
     fontFamily: "'Poppins', serif"
-  }
+  },
+  palette: {
+    primary: {
+      main: "#000",
+      contrastText: "#fff"
+    }
+  },
+  // components: {
+  //   MuiAppBar: {
+  //     styleOverrides: {
+  //       root: {
+  //         boxShadow: "0px 3px 3px -2px rgba(119, 119, 119, 0.11), 0px 3px 4px 0px rgba(119, 119, 119, 0.11), 0px 1px 8px 0px rgba(119, 119, 119, 0.11)"
+  //       }
+  //     }
+  //   }
+  // }
 });
-
+console.log(theme);
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Global

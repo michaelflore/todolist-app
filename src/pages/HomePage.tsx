@@ -4,7 +4,7 @@ function HomePage() {
 
   return (
     <div className="home-page">
-      <h1 className="page-title">My Todos</h1>
+      <h1 className="page-title">My To-dos</h1>
       <TodoListSection />
     </div>
   )

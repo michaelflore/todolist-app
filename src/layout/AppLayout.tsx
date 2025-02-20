@@ -1,12 +1,12 @@
 import { Outlet } from "react-router";
 import Container from "@mui/material/Container";
-import Header from "../components/Header";
+import NavBar from "./Navbar";
 
 function AppLayout() {
 
     return (
         <div className="todolist-app">
-            <Header />
+            <NavBar />
             <Container maxWidth="lg">
                 <Outlet />
             </Container>

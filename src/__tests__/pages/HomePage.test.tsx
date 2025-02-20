@@ -12,6 +12,6 @@ test("Shows the page title.", () => {
 
     const heading = screen.getByRole("heading", { level: 1 });
 
-    expect(heading).toHaveTextContent("My Todos");
+    expect(heading).toHaveTextContent("My To-dos");
 
 });
