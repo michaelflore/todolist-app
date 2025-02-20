@@ -4,7 +4,8 @@ export default {
   collectCoverageFrom: [
     "./src/**/*.{ts,tsx}",
     "!**/*.d.ts",
-    "!./src/types/*.ts"
+    "!./src/types/*.ts",
+    "!./src/main.tsx"
   ],
   coverageDirectory: "coverage",
   coverageProvider: "v8",

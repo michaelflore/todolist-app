@@ -430,3 +430,73 @@ test("Initial call succeeds and renders fetched todos. Search todos by name succ
     expect(screen.getAllByRole("listitem")).toHaveLength(1);
 
 });
+
+test("Initial call succeeds and renders fetched todos. Filter todos by completed success. Search within completed success.", async () => {
+    
+    const user = userEvent.setup();
+
+    render(
+        <MemoryRouter>
+            <TodoListSection />
+        </MemoryRouter>
+    );
+
+    //loading
+    const skeleton = screen.getByLabelText("Loading todos");
+
+    expect(skeleton).toBeInTheDocument();
+
+    //success
+    await waitFor(() => {
+        const skeleton = screen.queryByLabelText("Loading todos");
+        expect(skeleton).not.toBeInTheDocument();
+    });
+
+    const list = screen.getAllByRole("listitem");
+
+    expect(list).toHaveLength(4);
+
+    const completedBtn = screen.getByRole("button", { name: "Completed" });
+
+    await user.click(completedBtn);
+
+    //loading appears again
+    expect(screen.getByLabelText("Loading todos")).toBeInTheDocument();
+
+    //success
+    await waitFor(() => {
+        const skeleton = screen.queryByLabelText("Loading todos");
+        expect(skeleton).not.toBeInTheDocument();
+    });
+
+    //rendered
+    expect(screen.getAllByRole("listitem")).toHaveLength(2);
+
+    expect(screen.getByRole("button", { name: "Completed" })).toHaveAttribute("aria-current", "true");
+
+    const allCheckboxes = screen.getAllByRole("checkbox");
+    
+    allCheckboxes.forEach(elem => {
+        expect(elem).toBeChecked();
+    });
+
+    //search
+    const input = screen.getByPlaceholderText("Search todos...");
+
+    await user.type(input, "groceries");
+
+    //setTimeout
+    await waitFor(() => {
+        //loading appears again
+        expect(screen.getByLabelText("Loading todos")).toBeInTheDocument();
+    });
+
+    //success
+    await waitFor(() => {
+        const skeleton = screen.queryByLabelText("Loading todos");
+        expect(skeleton).not.toBeInTheDocument();
+    });
+
+    //rendered
+    expect(screen.getAllByRole("listitem")).toHaveLength(1);
+});
