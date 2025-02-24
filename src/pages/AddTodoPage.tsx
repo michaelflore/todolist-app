@@ -194,6 +194,7 @@ function AddTodoPage() {
                         <fieldset disabled={formDisabled}>
                             <FormControl className="form-group">
                                 <TextField
+                                    id="todo-title"
                                     error={formErrors.title ? true : false}
                                     label="Title"
                                     placeholder="Enter title..."

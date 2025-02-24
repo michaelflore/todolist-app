@@ -114,3 +114,32 @@ transform: {
     ],
   }
 ```
+
+### Cypress
+
+```
+npm i cypress -D
+```
+
+Added this to root tsconfig.json for typescript since cypress uses ts-node under the hood
+```
+{
+  "ts-node": {
+    "compilerOptions": {
+      "target": "ES2020",
+      "lib": ["ES2020", "DOM", "DOM.Iterable"],
+      "module": "ESNext",
+      "types": ["cypress", "node"]
+    }
+  },
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
+
+```
+
+You should also add cypress to the includes in tsconfig.app.json for intellisense since it relies on commands.ts reference
+vscode will pick it up
