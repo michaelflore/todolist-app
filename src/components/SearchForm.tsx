@@ -63,7 +63,8 @@ export function SearchForm({ activeFilter, setLoadingTodosState, setTodosErrorSt
 
             //api route not found
             if(todos === undefined) {
-              throw new Error();
+              setTodosErrorState({ type: "search", message: "Something went wrong. Please try again later."});
+              setLoadingTodosState(false);
             }
 
             // if(todos && todos.error) {
@@ -82,12 +83,7 @@ export function SearchForm({ activeFilter, setLoadingTodosState, setTodosErrorSt
     
           } catch(err) {
     
-            // console.error("fetchTodosSearch", err);
-    
-            if(err instanceof Error) {
-              setTodosErrorState({ type: "search", message: "Something went wrong. Please try again later."});
-              setLoadingTodosState(false);
-            }
+            console.error("fetchTodosSearch", err);
     
           }
     
@@ -104,7 +100,7 @@ export function SearchForm({ activeFilter, setLoadingTodosState, setTodosErrorSt
       placeholder="Search todos..."
       value={searchTerm}
       onChange={handleSearchTermChange}
-      aria-label="search todos"
+      aria-label="Search todos"
     />
   )
 }

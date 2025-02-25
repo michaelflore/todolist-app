@@ -18,7 +18,7 @@ interface FilterButtonsProps {
 function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosState, setTodosErrorState, setTodosState, searchTerm }: FilterButtonsProps) {
 
     const buttonStyles = css`
-        background-color: rgba(0, 0, 0, 0.02);
+        background-color: rgba(0, 0, 0, 0.10);
         padding: 0.6em 1.2em;
         font-size: 1em;
         font-weight: 500;
@@ -42,7 +42,7 @@ function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosStat
     `;
 
     const activeStyles = css`
-        background-color: rgba(0, 0, 0, 0.09);
+        background-color: rgba(0, 0, 0, 0.25);
         padding: 0.6em 1.2em;
         font-size: 1em;
         font-weight: 500;
@@ -53,7 +53,7 @@ function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosStat
         cursor: pointer;
 
         &:hover {
-            background-color: rgba(0, 0, 0, 0.05);
+            background-color: rgba(0, 0, 0, 0.20);
         }
 
         &:active {
@@ -79,7 +79,8 @@ function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosStat
 
                     //api route not found
                     if(todos === undefined) {
-                        throw new Error();
+                        setTodosErrorState({ type: "filter", message: "Something went wrong. Please try again later." });
+                        setLoadingTodosState(false);
                     }
         
                     // if(todos && todos.error) {
@@ -100,12 +101,7 @@ function FilterButtons({ activeFilter, setActiveFilterState, setLoadingTodosStat
             
                 } catch(err) {
             
-                    // console.error("fetchTodosAll", err);
-            
-                    if(err instanceof Error) {
-                        setTodosErrorState({ type: "filter", message: "Something went wrong. Please try again later." });
-                        setLoadingTodosState(false);
-                    }
+                    console.error("fetchTodosAll", err);
             
                 }
         

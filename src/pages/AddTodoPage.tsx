@@ -117,7 +117,10 @@ function AddTodoPage() {
                         const addedTodo = await addTodoAPI(newTodo);
 
                         if(addedTodo === undefined) {
-                            throw new Error();
+                            setAddError("Something went wrong. Please try again later.");
+                            setAddLoading(false);
+                            setFormDisabled(false);
+                            setSubmitDisabled(false);
                         }
 
                         // if(addedTodo && addedTodo.error) {
@@ -137,14 +140,8 @@ function AddTodoPage() {
                         }
 
                     } catch(err) {
-                        // console.error("addTodo", err);
 
-                        if(err instanceof Error) {
-                            setAddError("Something went wrong. Please try again later.");
-                            setAddLoading(false);
-                            setFormDisabled(false);
-                            setSubmitDisabled(false);
-                        }
+                        console.error("addTodo", err);
                     }
 
                 }

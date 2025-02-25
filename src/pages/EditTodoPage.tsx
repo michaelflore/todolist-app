@@ -1,5 +1,5 @@
 import { TodoUpdatesI } from "../types/todo";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 import { fetchTodoAPI } from "../api/todo-api";
 
@@ -23,8 +23,6 @@ function EditTodoPage() {
     const [previousTodo, setPreviousTodo] = useState<TodoUpdatesI>({ title: "", completed: false });
     const [todo, setTodo] = useState<TodoUpdatesI>({ title: "", completed: false });
 
-    const abortControllerRef = useRef<AbortController | undefined>();
-
     const setTodoTitleState = (value: string) => {
         setTodo(todo => ({ ...todo, title: value }));
     }
@@ -44,7 +42,6 @@ function EditTodoPage() {
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
-        abortControllerRef.current = abortController;
 
         setTodoLoading(true);
 
@@ -56,7 +53,8 @@ function EditTodoPage() {
                     const todo = await fetchTodoAPI((params.todoId as string), signal);
 
                     if(todo === undefined) {
-                        throw new Error();
+                        setTodoError("Something went wrong. Please try again later.");
+                        setTodoLoading(false);
                     }
 
                     if(todo && todo.error) {
@@ -77,11 +75,6 @@ function EditTodoPage() {
                 } catch(err) {
             
                     console.error("fetchTodo", err);
-
-                    if(err instanceof Error) {
-                        setTodoError("Something went wrong. Please try again later.");
-                        setTodoLoading(false);
-                    }
             
                 }
         
@@ -89,8 +82,8 @@ function EditTodoPage() {
         )();
     
         return () => {
-            if(abortControllerRef.current) {
-                abortControllerRef.current.abort("Mounted");
+            if(abortController) {
+                abortController.abort("Unmount");
             }
         }
         

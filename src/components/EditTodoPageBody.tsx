@@ -134,7 +134,10 @@ function EditTodoPageBody({ todoError, previousTodo, todo, clearForm, setTodoTit
                         const updatedTodo = await updateTodoAPI((params.todoId as string), updates);
 
                         if(updatedTodo === undefined) {
-                            throw new Error();
+                            setUpdateError("Something went wrong. Please try again later.");
+                            setUpdateLoading(false);
+                            setFormDisabled(false);
+                            setSubmitDisabled(false);
                         }
         
                         if(updatedTodo && updatedTodo.error) {
@@ -154,14 +157,9 @@ function EditTodoPageBody({ todoError, previousTodo, todo, clearForm, setTodoTit
                         }
 
                     } catch(err) {
+
                         console.error("updateTodo", err);
 
-                        if(err instanceof Error) {
-                            setUpdateError("Something went wrong. Please try again later.");
-                            setUpdateLoading(false);
-                            setFormDisabled(false);
-                            setSubmitDisabled(false);
-                        }
                     }
 
                 }
@@ -199,6 +197,7 @@ function EditTodoPageBody({ todoError, previousTodo, todo, clearForm, setTodoTit
                             <fieldset disabled={formDisabled}>
                                 <FormControl className="form-group">
                                     <TextField
+                                        id="todo-title"
                                         error={formErrors.title ? true : false}
                                         label="Title"
                                         placeholder="Enter title..."

@@ -25,6 +25,10 @@ export const fetchTodoAPI = async (todoId: string, signal: AbortSignal) => {
 
   } catch (err) {
 
+    if(err === "Unmount") {
+      return "Unmount";
+    }
+
     if(err instanceof Error) {
       console.error("fetchTodoAPI", err);
     }
@@ -79,6 +83,10 @@ export const fetchTodosAPI = async (filterTerm: filterStatusType, searchTerm: st
     return data;
 
   } catch(err) {
+    
+    if(err === "Unmount") {
+      return "Unmount";
+    }
 
     if(err instanceof Error) {
       console.error("fetchTodosAPI", err);

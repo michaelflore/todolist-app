@@ -105,4 +105,10 @@
 
 .delete-modal__actions .delete-modal__actions-yes {
     background-color: rgba(255, 0, 0, 1);
+    box-shadow: none;
+}
+
+.delete-modal__actions .delete-modal__actions-yes:hover {
+    background-color: rgb(173, 0, 0);
+    box-shadow: none;
 }

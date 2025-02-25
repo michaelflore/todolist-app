@@ -204,7 +204,7 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
                         />
                     ) : (
                         <Checkbox
-                            aria-label="mark complete"
+                            aria-label="Mark complete"
                             checked={todo.completed}
                             onChange={handleCheckChange}
                             className="todolist__item-status-cb"

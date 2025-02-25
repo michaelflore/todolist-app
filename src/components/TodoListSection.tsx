@@ -100,11 +100,11 @@ function TodoListSection() {
         try {
   
           const todos = await fetchTodosAPI("", "", signal);
-          // console.log("mount", todos);
 
           //api route not found
           if(todos === undefined) {
-            throw new Error();
+            setTodosError({ type: "fetch", message: "Something went wrong. Please try again later." });
+            setLoading(false);
           }
 
           // if(todos && todos.error) {
@@ -124,12 +124,7 @@ function TodoListSection() {
   
         } catch(err) {
   
-          // console.error("fetchTodos", err);
-  
-          if(err instanceof Error) {
-            setTodosError({ type: "fetch", message: "Something went wrong. Please try again later." });
-            setLoading(false);
-          }
+          console.error("fetchTodos", err);
   
         }
   
@@ -138,7 +133,10 @@ function TodoListSection() {
     )();
 
     return () => {
-      abortController.abort("Mounted");
+
+      if(abortController) {
+        abortController.abort("Unmount");
+      }
     }
 
   }, []);
