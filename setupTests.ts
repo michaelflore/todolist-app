@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { randomUUID } from "crypto";
 
-import { server } from "./src/__mocks__/mock-server";
+import { server } from "./src/__mocks__/mock-server-node";
 import mockedDatabase from "./src/__mocks__/mock-db";
 
 Object.defineProperty(global, "crypto", {

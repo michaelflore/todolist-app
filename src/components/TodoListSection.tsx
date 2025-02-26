@@ -279,7 +279,15 @@ function TodoListSection() {
           <>
             {
               todosError && todosError.type ? (
-                <Alert severity="error" onClose={todosError.type === "fetch" ? undefined : handleAlertClose}>
+                <Alert
+                  severity="error"
+                  onClose={todosError.type === "fetch" ? undefined : handleAlertClose}
+                  slotProps={{
+                    closeButton: {
+                      "aria-label": "Close alert"
+                    }
+                  }}
+                >
                   <AlertTitle>Error</AlertTitle>
                   {
                     todosError.message

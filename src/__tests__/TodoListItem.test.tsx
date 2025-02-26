@@ -2,7 +2,7 @@ import { render, waitForElementToBeRemoved, screen } from "@testing-library/reac
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { http, HttpResponse, delay } from "msw";
-import { server } from "../__mocks__/mock-server";
+import { server } from "../__mocks__/mock-server-node";
 
 import TodoListItem from "../components/TodoListItem";
 
@@ -153,7 +153,7 @@ describe("Test completed Todo.", () => {
 
         expect(deleteBtn).not.toBeDisabled();
 
-        const alertClose = screen.getByLabelText(/Close/);
+        const alertClose = screen.getByLabelText(/Close item alert/);
 
         expect(alertClose).toBeInTheDocument();
 
@@ -224,7 +224,7 @@ describe("Test completed Todo.", () => {
 
         expect(deleteBtn).not.toBeDisabled();
 
-        const alertClose = screen.getByLabelText(/Close/);
+        const alertClose = screen.getByLabelText(/Close item alert/);
 
         expect(alertClose).toBeInTheDocument();
 
@@ -397,7 +397,7 @@ describe("Test completed Todo.", () => {
 
         expect(deleteBtn).not.toBeDisabled();
 
-        const alertClose = screen.getByLabelText(/Close/);
+        const alertClose = screen.getByLabelText(/Close item alert/);
 
         expect(alertClose).toBeInTheDocument();
 
@@ -475,7 +475,7 @@ describe("Test completed Todo.", () => {
 
         expect(deleteBtn).not.toBeDisabled();
 
-        const alertClose = screen.getByLabelText(/Close/);
+        const alertClose = screen.getByLabelText(/Close item alert/);
 
         expect(alertClose).toBeInTheDocument();
 
@@ -514,7 +514,6 @@ describe("Test not completed Todo.", () => {
         expect(checkboxInput).not.toBeChecked();
     
     });
-
 });
 
 test("Title, links, and button are displayed.", async () => {

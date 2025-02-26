@@ -1,5 +1,5 @@
 import { http, HttpResponse, delay } from "msw";
-import { server } from "../../__mocks__/mock-server";
+import { server } from "../../__mocks__/mock-server-node";
 
 import { fetchTodoAPI, fetchTodosAPI } from "../../api/todo-api";
 

@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { http, HttpResponse, delay } from "msw";
-import { server } from "../__mocks__/mock-server";
+import { server } from "../__mocks__/mock-server-node";
 
 import TodoListSection from "../components/TodoListSection";
 
@@ -42,7 +42,7 @@ test("Initial call succeeds and renders fetched todos. Alert message shows up.",
     expect(alert).toBeInTheDocument();
     expect(alertText).toBeInTheDocument();
 
-    const alertClose = screen.getByLabelText(/Close/);
+    const alertClose = screen.getByLabelText(/Close alert/);
 
     expect(alertClose).toBeInTheDocument();
 
@@ -151,7 +151,7 @@ test("Initial call fails and renders the alert message.", async () => {
     expect(alert).toBeInTheDocument();
     expect(alertText).toBeInTheDocument();
 
-    const alertClose = screen.queryByLabelText(/Close/);
+    const alertClose = screen.queryByLabelText(/Close alert/);
 
     expect(alertClose).not.toBeInTheDocument();
 
@@ -375,7 +375,7 @@ test("Initial call succeeds and renders fetched todos. Filter todos by completed
     expect(alert).toBeInTheDocument();
     expect(alertText).toBeInTheDocument();
 
-    const alertClose = screen.getByLabelText(/Close/);
+    const alertClose = screen.getByLabelText(/Close alert/);
 
     expect(alertClose).toBeInTheDocument();
 

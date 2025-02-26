@@ -98,7 +98,9 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
                     const deletedTodo = await deleteTodoAPI(todo.id);
 
                     if(deletedTodo === undefined) {
-                        throw new Error();
+                        setItemError("Something went wrong. Please try again later.");
+                        setDeleteLoading(false);
+                        setCheckboxDisabled(false);
                     }
 
                     if(deletedTodo && deletedTodo.error) {
@@ -118,13 +120,9 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
 
 
                 } catch(err) {
+
                     console.error("deleteTodo", err);
 
-                    if(err instanceof Error) {
-                        setItemError("Something went wrong. Please try again later.");
-                        setDeleteLoading(false);
-                        setCheckboxDisabled(false);
-                    }
                 }
 
             }
@@ -154,7 +152,10 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
                 const updatedTodo = await updateTodoAPI(todo.id, { completed: e.target.checked });
                 
                 if(updatedTodo === undefined) {
-                    throw new Error();
+                    setItemError("Something went wrong. Please try again later.");
+                    setEditLoading(false);
+                    setEditLinkDisabled(false);
+                    setDeleteButtonDisabled(false);
                 }
 
                 if(updatedTodo && updatedTodo.error) {
@@ -174,14 +175,8 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
                 }
 
             } catch(err) {
-                // console.error("updateTodo", err);
 
-                if(err instanceof Error) {
-                    setItemError("Something went wrong. Please try again later.");
-                    setEditLoading(false);
-                    setEditLinkDisabled(false);
-                    setDeleteButtonDisabled(false);
-                }
+                console.error("updateTodo", err);
 
             }
 
@@ -218,7 +213,18 @@ function TodoListItem({ todo, deleteTodoState, updateTodoState } : TodoListItemP
             <div className="todolist__item-details">
                 {
                     itemError && (
-                        <Alert icon={false} severity="error" onClose={handleCloseItemError}>{itemError}</Alert>
+                        <Alert
+                            icon={false}
+                            severity="error"
+                            onClose={handleCloseItemError}
+                            slotProps={{
+                                closeButton: {
+                                    "aria-label": "Close item alert"
+                                }
+                            }}
+                        >
+                            {itemError}
+                        </Alert>
                     )
                 }
                 <h2 css={todoTitleStyles}>{todo.title}</h2>
