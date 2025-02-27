@@ -11,7 +11,8 @@
     "server": "tsc server.ts --target es2022 --module esnext --moduleResolution node --resolveJsonModule true --esModuleInterop true && node server.js",
     "development": "concurrently \"npm run server\" \"npm run dev\" ",
     "test": "jest",
-    "test:cy": "cypress open"
+    "test:cy": "cypress open",
+    "deploy": "aws s3 sync dist s3://jumplists"
   },
   "dependencies": {
     "@mui/icons-material": "^6.4.2",

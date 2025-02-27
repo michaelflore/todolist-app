@@ -51,6 +51,8 @@ export default tseslint.config({
 })
 ```
 
+## Development
+
 ## To start data server
 ```
 npm run server
@@ -68,4 +70,11 @@ npm run test
 ## To run individual tests
 ```
 npm run test -- NoTodos.test.tsx
+```
+
+## Production
+
+## To build
+```
+npm run build
 ```
