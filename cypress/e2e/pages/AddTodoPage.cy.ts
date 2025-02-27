@@ -34,5 +34,4 @@ describe("AddTodoPage", () => {
     cy.get("button[aria-label=Close]").click();
 
   });
-
 });

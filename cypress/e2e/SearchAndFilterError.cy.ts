@@ -1,6 +1,6 @@
 import { http, HttpResponse, delay } from "msw";
 
-describe("SearchAndFilterErrors", () => {
+describe("SearchAndFilterError", () => {
     beforeEach(() => {
         cy.visit("/");
     });

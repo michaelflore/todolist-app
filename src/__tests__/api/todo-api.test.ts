@@ -3,6 +3,10 @@ import { server } from "../../__mocks__/mock-server-node";
 
 import { fetchTodoAPI, fetchTodosAPI } from "../../api/todo-api";
 
+afterEach(() => {
+    jest.clearAllMocks();
+});
+
 test("Fetch a single todo. Successful call.", async () => {
 
     const abortFake = new AbortController();
@@ -45,6 +49,22 @@ test("Fetch a single todo. Service is down or not found.", async () => {
 
 });
 
+test("Fetch a single todo. Request aborted.", async () => {
+
+    const consoleSpy = jest.spyOn( console, "error" );
+
+    const abortFake = new AbortController();
+
+    abortFake.abort("Unmount");
+
+    const response = await fetchTodoAPI("3bb4944c-d5d0-4f93-a8c5-93b513bd90cc", abortFake.signal);
+    
+    expect(response).toBe("Unmount");
+    
+    expect(consoleSpy).not.toHaveBeenCalled();
+
+});
+
 test("Fetch todos. Test filter and search. Successful call.", async () => {
 
     const abortFake = new AbortController();
@@ -84,5 +104,21 @@ test("Fetch todos. Test filter and search. Service is down or not found.", async
         name: "TypeError",
         message: "Failed to fetch"
     }));
+
+});
+
+test("Fetch todos. Test filter and search. Request aborted.", async () => {
+
+    const consoleSpy = jest.spyOn( console, "error" );
+
+    const abortFake = new AbortController();
+
+    abortFake.abort("Unmount");
+
+    const response = await fetchTodosAPI("pending", "doctor", abortFake.signal);
+
+    expect(response).toBe("Unmount");
+    
+    expect(consoleSpy).not.toHaveBeenCalled();
 
 });

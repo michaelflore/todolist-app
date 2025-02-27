@@ -93,9 +93,13 @@ export const handlers = [
             completed: todoBody.completed
         };
 
+        const response = mockedDatabase.db;
+    
+        response.unshift(newTodo);
+
         await delay();
 
-        return HttpResponse.json(newTodo, { status: 200 });
+        return HttpResponse.json(response[0], { status: 200 });
     }),
     http.patch<UpdateTodoParams, UpdateTodoRequestBody>("/api/todolist/:todoId", async (info) => {
 
@@ -131,15 +135,28 @@ export const handlers = [
 
         return HttpResponse.json(todo, { status: 200 });
     }),
-    http.delete("/api/todolist/:todoId", async () => {
+    http.delete("/api/todolist/:todoId", async (info) => {
+        const todoId = info.params.todoId;
+
+        const response = mockedDatabase.db;
+
+        const index = response.findIndex(value => value.id === todoId);
 
         await delay();
 
-        return HttpResponse.json({
-            "id": "2e70d95c-11b4-494b-ad69-026acc309a08",
-            "title": "Complete project report",
-            "completed": true
-        }, { status: 200 });
+        if(index === -1) {
+            return HttpResponse.json(
+                {
+                    error: true,
+                    message: "Item not found."
+                },
+                { status: 404 }
+            )
+        }
+        
+        const deletedItem = response.splice(index, 1)[0];
+
+        return HttpResponse.json(deletedItem, { status: 200 });
     })
 ];
 

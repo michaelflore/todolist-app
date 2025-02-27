@@ -95,18 +95,11 @@ describe("Test completed Todo.", () => {
     });
 
     test("Checbox api fails. Shows item error. Close error.", async () => {
-        server.use(
-            http.patch("/api/todolist/:todoId", async () => {
-                await delay();
-                
-                return HttpResponse.json({ error: true, message: "Item not found." }, { status: 404 });
-            })
-        );
 
         const user = userEvent.setup();
         
         const todoMock = {
-            "id": "2e70d95c-11b4-494b-ad69-026acc309a08",
+            "id": "outdatedid",
             "title": "Complete project report",
             "completed": true
         }
@@ -145,17 +138,17 @@ describe("Test completed Todo.", () => {
         });
 
         const alert = screen.getByRole("alert");
+        const alertText = screen.getByText("Item not found.");
 
         expect(alert).toBeInTheDocument();
+        expect(alertText).toBeInTheDocument();
 
         const editLink = screen.getByRole("link");
-        expect(editLink).toHaveAttribute("href", "/edit/2e70d95c-11b4-494b-ad69-026acc309a08");
+        expect(editLink).toHaveAttribute("href", "/edit/outdatedid");
 
         expect(deleteBtn).not.toBeDisabled();
 
         const alertClose = screen.getByLabelText(/Close item alert/);
-
-        expect(alertClose).toBeInTheDocument();
 
         await user.click(alertClose);
 

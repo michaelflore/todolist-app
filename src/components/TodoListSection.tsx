@@ -231,6 +231,11 @@ function TodoListSection() {
             severity="success"
             onClose={handleAlertSuccessClose}
             className="todo-success-alert"
+            slotProps={{
+              closeButton: {
+                "aria-label": "Close success alert"
+              }
+            }}
           >
             {
               updatedTodoSuccessMessage

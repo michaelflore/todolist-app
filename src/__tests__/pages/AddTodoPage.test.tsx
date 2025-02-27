@@ -18,7 +18,7 @@ test("Go back button to previous page in history.", async () => {
         </MemoryRouter>
     );
 
-    const backBtn = screen.getByLabelText("go back");
+    const backBtn = screen.getByLabelText("Go back");
 
     await user.click(backBtn);
 

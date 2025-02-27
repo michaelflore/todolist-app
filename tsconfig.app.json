@@ -25,5 +25,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
   },
-  "include": ["src", "setupTests.ts", "cypress"]
+  "include": ["src", "setupTests.ts"]
 }

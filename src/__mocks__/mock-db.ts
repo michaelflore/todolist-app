@@ -1,4 +1,4 @@
-import list from "../../mockdata.json" assert { type: "json" };
+import list from "../../mockdata.json";
 import { TodoI } from "../types/todo";
 
 //since we are using this db in request handlers, its better to use an object that contains the db internally rather than using

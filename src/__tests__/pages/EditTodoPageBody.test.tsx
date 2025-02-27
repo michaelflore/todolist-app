@@ -295,7 +295,7 @@ test("Edit a todo error api call scenario.", async () => {
     expect(alert).toBeInTheDocument();
     expect(alertText).toBeInTheDocument();
 
-    const alertClose = screen.getByLabelText(/Close/);
+    const alertClose = screen.getByLabelText(/Close update alert/);
 
     expect(alertClose).toBeInTheDocument();
 
@@ -390,7 +390,7 @@ test("Edit a todo api call is down or not found.", async () => {
     expect(alert).toBeInTheDocument();
     expect(alertText).toBeInTheDocument();
 
-    const alertClose = screen.getByLabelText(/Close/);
+    const alertClose = screen.getByLabelText(/Close update alert/);
 
     expect(alertClose).toBeInTheDocument();
 

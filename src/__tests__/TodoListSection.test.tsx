@@ -42,7 +42,7 @@ test("Initial call succeeds and renders fetched todos. Alert message shows up.",
     expect(alert).toBeInTheDocument();
     expect(alertText).toBeInTheDocument();
 
-    const alertClose = screen.getByLabelText(/Close alert/);
+    const alertClose = screen.getByLabelText(/Close success alert/);
 
     expect(alertClose).toBeInTheDocument();
 

@@ -54,7 +54,7 @@ test("Go back button", async () => {
         </MemoryRouter>
     );
 
-    const backBtn = screen.getByLabelText("go back");
+    const backBtn = screen.getByLabelText("Go back");
 
     await user.click(backBtn);
 

@@ -187,7 +187,18 @@ function EditTodoPageBody({ todoError, previousTodo, todo, clearForm, setTodoTit
                     <div className="form-section">
                         {
                             updateError && (
-                                <Alert icon={false} severity="error" onClose={handleCloseUpdateError}>{updateError}</Alert>
+                                <Alert
+                                    icon={false}
+                                    severity="error"
+                                    onClose={handleCloseUpdateError}
+                                    slotProps={{
+                                        closeButton: {
+                                            "aria-label": "Close update alert"
+                                        }
+                                    }}
+                                >
+                                    {updateError}
+                                </Alert>
                             )
                         }
                         <form

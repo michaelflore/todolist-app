@@ -94,7 +94,7 @@ function EditTodoPage() {
             <div className="todo-page__header">
                 <div className="todo-page__header-actions">
                     <IconButton
-                        aria-label="go back"
+                        aria-label="Go back"
                         className="back-button"
                         onClick={handleGoBack}
                     >

@@ -121,29 +121,25 @@ transform: {
 npm i cypress -D
 ```
 
-Added this to root tsconfig.json for typescript since cypress uses ts-node under the hood
+Added this to the cypress tsconfig.json for typescript since cypress uses ts-node under the hood
 ```
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "types": ["cypress", "node"],
-  },
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "target": "ES2020",
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "types": ["cypress"],
+    },
+    "include": ["**/*.*"]
 }
 
 ```
 
-You should also add cypress to the includes in tsconfig.app.json for intellisense since it relies on commands.ts reference
-vscode will pick it up
+Remove cypress from the root tsconfig.json if you put it there, so that vs code will pick up describe and it from mocha instead of jest.
 
 ### MSW + Cypress
 We would need to setup browser integration for msw to use with cypress

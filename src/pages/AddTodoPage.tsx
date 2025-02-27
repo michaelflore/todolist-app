@@ -115,7 +115,7 @@ function AddTodoPage() {
                     try {
 
                         const addedTodo = await addTodoAPI(newTodo);
-
+console.log(addedTodo);
                         if(addedTodo === undefined) {
                             setAddError("Something went wrong. Please try again later.");
                             setAddLoading(false);
@@ -168,7 +168,7 @@ function AddTodoPage() {
             <div className="todo-page__header">
                 <div className="todo-page__header-actions">
                     <IconButton
-                        aria-label="go back"
+                        aria-label="Go back"
                         className="back-button"
                         onClick={handleGoBack}
                     >
@@ -181,7 +181,18 @@ function AddTodoPage() {
                 <div className="form-section">
                     {
                         addError && (
-                            <Alert icon={false} severity="error" onClose={handleCloseAddError}>{addError}</Alert>
+                            <Alert
+                                icon={false}
+                                severity="error"
+                                onClose={handleCloseAddError}
+                                slotProps={{
+                                    closeButton: {
+                                        "aria-label": "Close add alert"
+                                    }
+                                }}
+                            >
+                                {addError}
+                            </Alert>
                         )
                     }
                     <form
