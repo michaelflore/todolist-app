@@ -6,10 +6,16 @@ interface Query {
   filter?: filterStatusType;
 }
 
+const baseUrl = import.meta.env.VITE_API_URL;
+
 export const fetchTodoAPI = async (todoId: string, signal: AbortSignal) => {
 
   try {
-    const url = "/api/todolist/" + todoId;
+    let url = "/api/todolist/" + todoId;
+
+    if(baseUrl) {
+      url = baseUrl + url;
+    }
 
     const response = await fetch(url, {
       method: "GET",
@@ -41,6 +47,10 @@ export const fetchTodosAPI = async (filterTerm: filterStatusType, searchTerm: st
 
   try {
     let url = "/api/todolist";
+
+    if(baseUrl) {
+      url = baseUrl + url;
+    }
 
     const query: Query = {};
 
@@ -84,7 +94,7 @@ export const fetchTodosAPI = async (filterTerm: filterStatusType, searchTerm: st
 
   } catch(err) {
     
-    if(err === "Unmount") {
+    if(err === "Unmount" || err === "Canceled") {
       return "Unmount";
     }
 
@@ -99,7 +109,11 @@ export const fetchTodosAPI = async (filterTerm: filterStatusType, searchTerm: st
 export const addTodoAPI = async (newTodo: TodoAddI) => {
 
   try {
-    const url = "/api/todolist";
+    let url = "/api/todolist";
+
+    if(baseUrl) {
+      url = baseUrl + url;
+    }
 
     const response = await fetch(url, {
       method: "POST",
@@ -127,7 +141,11 @@ export const addTodoAPI = async (newTodo: TodoAddI) => {
 export const updateTodoAPI = async (todoId: string, updates: TodoUpdatesBody) => {
 
   try {
-    const url = "/api/todolist/" + todoId;
+    let url = "/api/todolist/" + todoId;
+
+    if(baseUrl) {
+      url = baseUrl + url;
+    }
 
     const response = await fetch(url, {
       method: "PATCH",
@@ -155,7 +173,11 @@ export const updateTodoAPI = async (todoId: string, updates: TodoUpdatesBody) =>
 export const deleteTodoAPI = async (todoId: string) => {
 
   try {
-    const url = "/api/todolist/" + todoId;
+    let url = "/api/todolist/" + todoId;
+
+    if(baseUrl) {
+      url = baseUrl + url;
+    }
 
     const response = await fetch(url, {
       method: "DELETE",

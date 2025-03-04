@@ -115,7 +115,7 @@ function AddTodoPage() {
                     try {
 
                         const addedTodo = await addTodoAPI(newTodo);
-console.log(addedTodo);
+
                         if(addedTodo === undefined) {
                             setAddError("Something went wrong. Please try again later.");
                             setAddLoading(false);

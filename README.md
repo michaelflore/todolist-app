@@ -78,3 +78,13 @@ npm run test -- NoTodos.test.tsx
 ```
 npm run build
 ```
+
+Can also pass in --port 3000
+```
+npm run preview
+```
+
+## To deploy
+Make sure to pass profile
+```
+npm run deploy
