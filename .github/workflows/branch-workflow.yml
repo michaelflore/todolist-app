@@ -1,0 +1,18 @@
+name: Branch CI Workflow
+run-name: ${{ github.actor }} creating a branch workflow
+on: [push]
+jobs:
+    Install-Build-Test:
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "Job was triggered by ${{ github.event_name }}"
+            - run: echo "Running on ${{ runner.os }} server hosted by github"
+            - run: echo "Branch name is ${{ github.ref }}"
+            - name: Checkout the repository code
+              uses: actions/checkout@v4
+            - run: echo "Repo name is ${{ github.repository }} is cloned to the runner"
+            - run: echo "Ready to test code on the runner"
+            - name: List files in the repo
+              run: |
+                ls ${{ github.workspace }}
+            - run: echo "This jobs status is ${{ job.status }}"
