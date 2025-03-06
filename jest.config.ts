@@ -1,4 +1,5 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} **/
+
 export default {
   collectCoverage: true,
   collectCoverageFrom: [
@@ -17,6 +18,7 @@ export default {
       "lines": 0
     }
   },
+  extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
     "^/vite.svg$": "<rootDir>/public/vite.svg",
   },
@@ -28,7 +30,18 @@ export default {
     "^.+.tsx?$": [
       "ts-jest",
       {
-        tsconfig: "tsconfig.app.json"
+        tsconfig: "tsconfig.test.json",
+        diagnostics: {
+          ignoreCodes: [1343]
+        },
+        astTransformers: {
+          before: [
+            {
+              path: 'ts-jest-mock-import-meta',
+              options: { metaObjectReplacement: { env: {} } }
+            }
+          ]
+        }
       }
     ],
     "^.+\\.svg$": "<rootDir>/svgTransformer.js",

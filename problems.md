@@ -47,3 +47,9 @@ type modoule in package.json for json-server and svgTransformer.js
 4) testing
 when testing keep in mind the server in setupTests.ts modifications to it ended up affecting various tests so we created
 a mockdb file and reset the data on each test
+
+Import meta available only when module is set to a recent esm
+Only fixed that worked
+npm i -D ts-jest-mock-import-meta
+
+Follow guide on npm
