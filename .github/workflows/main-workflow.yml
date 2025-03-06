@@ -47,11 +47,13 @@ jobs:
       - name: List files in the ws after commands
         run: |
           ls ${{ github.workspace }}
+      - name: Create a tarball of the dist folder
+        run: tar -czf dist.tar.gz dist/
       - name: Upload dist folder as artifact
         uses: actions/upload-artifact@v4
         with:
-            name: dist
-            path: dist
+          name: dist
+          path: dist.tar.gz
   deploy-s3:
     needs: npm-install-test-build
     name: "Deploy to S3"
@@ -60,7 +62,9 @@ jobs:
       - name: Download dist folder
         uses: actions/download-artifact@v4
         with:
-            name: dist
+          name: dist
+      - name: Extract the dist folder from the tarball
+        run: tar -xzf dist.tar.gz
       - name: List files and artifacts
         run: |
           ls ${{ github.workspace }}
