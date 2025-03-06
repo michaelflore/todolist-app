@@ -1,0 +1,73 @@
+name: Main Branch CD Workflow
+run-name: ${{ github.actor }} testing, building, and deploying to AWS S3
+on:
+  pull_request:
+    branches:
+      - "main"
+jobs:
+  npm-install-test-build:
+    name: "npm install, test, and build"
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          EVENT_CONTEXT: ${{ toJson(github.event) }}
+          super_secret: ${{ secrets.SUPERSECRET }}
+        run: |
+          echo $EVENT_CONTEXT
+          echo "$super_secret"
+      - name: List job info
+        run: |
+          echo "Running on ${{ runner.os }} server hosted by github"
+          echo "Job was triggered by ${{ github.event_name }}"
+          echo "Branch name is ${{ github.ref }}"
+      - name: Checkout the repository code
+        uses: actions/checkout@v4.2.0
+      - run: echo "Repo name is ${{ github.repository }} is cloned to the runner"
+      - run: echo "Ready to test code on the runner"
+      - name: List files in the repo
+        run: |
+          ls ${{ github.workspace }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.17.x"
+          cache: "npm"
+      - name: Check Node.js and npm versions
+        run: |
+          node -v
+          npm -v
+      - name: NPM install
+        run: npm install
+      - name: NPM Test
+        run: npm test
+      - name: NPM Build
+        run: npm run build
+      - name: List files in the ws after commands
+        run: |
+          ls ${{ github.workspace }}
+      - name: Upload dist folder as artifact
+        uses: actions/upload-artifact@v4
+        with:
+            name: dist
+            path: dist/
+  deploy-s3:
+    needs: npm-install-test-build
+    name: "Deploy to S3"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download dist folder
+        uses: actions/download-artifact@v4
+        with:
+            name: dist
+      - name: List files and artifacts
+        run: |
+          ls ${{ github.workspace }}
+          ls -R dist
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ secrets.AWS_REGION }}
+      - name: Sync to S3 bucket
+        run: npm run deploy   
