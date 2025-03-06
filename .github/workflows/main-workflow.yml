@@ -6,6 +6,12 @@ on:
       - "main"
     types:
       - closed
+  push:
+    branches:
+      - "setup-pipeline"
+permissions:
+  contents: read
+  id-token: write
 jobs:
   npm-install-test-build:
     name: "npm install, test, and build"
