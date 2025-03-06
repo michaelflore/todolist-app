@@ -65,11 +65,11 @@ npm run development
 
 ## To run tests
 ```
-npm run test
+npm test
 ```
 ## To run individual tests
 ```
-npm run test -- NoTodos.test.tsx
+npm test -- NoTodos.test.tsx
 ```
 
 ## Production
