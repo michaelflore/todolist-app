@@ -53,3 +53,5 @@ Only fixed that worked
 npm i -D ts-jest-mock-import-meta
 
 Follow guide on npm
+
+5) Use OIDC for github actions connect to aws
