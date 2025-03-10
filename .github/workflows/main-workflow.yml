@@ -6,9 +6,9 @@ on:
       - "main"
     types:
       - closed
-  push:
-    branches:
-      - "setup-pipeline"
+  # push:
+  #   branches:
+  #     - "setup-pipeline"
 permissions:
   contents: read
   id-token: write
