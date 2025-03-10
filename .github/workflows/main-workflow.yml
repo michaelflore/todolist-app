@@ -79,7 +79,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
             role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
-            role-session-name: github-actions-aws-session
+            role-session-name: github-actions-aws-s3-session
             aws-region: ${{ secrets.AWS_REGION }}
       - name: Sync to S3 bucket
         run: npm run deploy   
