@@ -2,10 +2,10 @@ name: Main Branch CD Workflow
 run-name: ${{ github.actor }} testing, building, and deploying to AWS S3
 on:
   pull_request:
-    branches:
-      - "main"
     types:
       - closed
+    branches:
+      - "main"
   # push:
   #   branches:
   #     - "setup-pipeline"
