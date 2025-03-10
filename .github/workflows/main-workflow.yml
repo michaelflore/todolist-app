@@ -1,0 +1,88 @@
+name: Main Branch CD Workflow
+run-name: ${{ github.actor }} testing, building, and deploying to AWS S3
+on:
+  pull_request:
+    types:
+      - closed
+    branches: main
+  # push:
+  #   branches:
+  #     - "setup-pipeline"
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  npm-install-test-build:
+    name: "npm install, test, and build"
+    runs-on: ubuntu-latest
+    env:
+      VITE_API_URL: ${{ secrets.VITE_API_URL }}
+    steps:
+      - env:
+          EVENT_CONTEXT: ${{ toJson(github.event) }}
+        run: |
+          echo $EVENT_CONTEXT
+      - name: List job info
+        run: |
+          echo "Running on ${{ runner.os }} server hosted by github"
+          echo "Job was triggered by ${{ github.event_name }}"
+          echo "Branch name is ${{ github.ref }}"
+      - name: Checkout the repository code
+        uses: actions/checkout@v4.2.0
+      - run: echo "Repo name is ${{ github.repository }} is cloned to the runner"
+      - run: echo "Ready to test code on the runner"
+      - name: List files in the repo
+        run: |
+          ls ${{ github.workspace }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.17.x"
+          cache: "npm"
+      - name: Check Node.js and npm versions
+        run: |
+          node -v
+          npm -v
+      - name: NPM install
+        run: npm install
+      - name: NPM Test
+        run: npm test
+      - name: NPM Build
+        run: npm run build
+      - name: List files in the ws after commands
+        run: |
+          ls ${{ github.workspace }}
+      - name: Create a tarball of the dist folder
+        run: tar -czf dist.tar.gz dist/
+      - name: Upload dist folder as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist.tar.gz
+  deploy-s3:
+    needs: npm-install-test-build
+    name: "Deploy to S3"
+    runs-on: ubuntu-latest
+    env:
+      bucket_name: ${{ secrets.BUCKET_NAME }}
+    steps:
+      - name: Download dist folder
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+      - name: Extract the dist folder from the tarball
+        run: tar -xzf dist.tar.gz
+      - name: List files and artifacts
+        run: |
+          ls ${{ github.workspace }}
+          ls -R dist
+      # Will also provide AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN env variables
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+            role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+            role-session-name: github-actions-aws-s3-session
+            aws-region: ${{ secrets.AWS_REGION }}
+      - name: Sync to S3 bucket
+        run: |
+          aws s3 sync dist s3://$bucket_name
