@@ -8,13 +8,13 @@ jobs:
   npm-install-test-build:
     name: "npm install, test, and build"
     runs-on: ubuntu-latest
+    env:
+      VITE_API_URL: ${{ secrets.VITE_API_URL }}
     steps:
       - env:
           EVENT_CONTEXT: ${{ toJson(github.event) }}
-          super_secret: ${{ secrets.SUPERSECRET }}
         run: |
           echo $EVENT_CONTEXT
-          echo "$super_secret"
       - name: List job info
         run: |
           echo "Running on ${{ runner.os }} server hosted by github"

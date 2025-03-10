@@ -6,17 +6,23 @@ on:
       - "main"
     types:
       - closed
+  # push:
+  #   branches:
+  #     - "setup-pipeline"
+permissions:
+  contents: read
+  id-token: write
 jobs:
   npm-install-test-build:
     name: "npm install, test, and build"
     runs-on: ubuntu-latest
+    env:
+      VITE_API_URL: ${{ secrets.VITE_API_URL }}
     steps:
       - env:
           EVENT_CONTEXT: ${{ toJson(github.event) }}
-          super_secret: ${{ secrets.SUPERSECRET }}
         run: |
           echo $EVENT_CONTEXT
-          echo "$super_secret"
       - name: List job info
         run: |
           echo "Running on ${{ runner.os }} server hosted by github"
@@ -58,6 +64,8 @@ jobs:
     needs: npm-install-test-build
     name: "Deploy to S3"
     runs-on: ubuntu-latest
+    env:
+      bucket_name: ${{ secrets.BUCKET_NAME }}
     steps:
       - name: Download dist folder
         uses: actions/download-artifact@v4
@@ -69,11 +77,13 @@ jobs:
         run: |
           ls ${{ github.workspace }}
           ls -R dist
+      # Will also provide AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN env variables
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-            role-to-assume: ${{ secrets.IAM_ROLE }}
-            role-session-name: github-actions-aws-session
+            role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+            role-session-name: github-actions-aws-s3-session
             aws-region: ${{ secrets.AWS_REGION }}
       - name: Sync to S3 bucket
-        run: npm run deploy   
+        run: |
+          aws s3 sync dist s3://$bucket_name
