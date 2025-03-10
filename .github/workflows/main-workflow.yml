@@ -64,6 +64,8 @@ jobs:
     needs: npm-install-test-build
     name: "Deploy to S3"
     runs-on: ubuntu-latest
+    env:
+      bucket_name: ${{ secrets.BUCKET_NAME }}
     steps:
       - name: Download dist folder
         uses: actions/download-artifact@v4
@@ -81,5 +83,8 @@ jobs:
             role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
             role-session-name: github-actions-aws-s3-session
             aws-region: ${{ secrets.AWS_REGION }}
+      - run: echo ${{ env }}
       - name: Sync to S3 bucket
-        run: npm run deploy   
+        run: |
+          aws s3 ls
+          aws s3 sync dist s3://$bucket_name
